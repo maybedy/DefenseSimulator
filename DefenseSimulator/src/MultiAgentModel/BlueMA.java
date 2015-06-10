@@ -1,9 +1,12 @@
 package MultiAgentModel;
 
+import java.util.ArrayList;
+
 import BlueC2Model.BlueBattalionC2;
 import BlueC2Model.BlueCompany;
 import BlueC2Model.Sensor;
 import BlueC2Model.Shooter;
+import Common.CEInfo;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -32,12 +35,9 @@ public class BlueMA extends BasicMultiAgentModel {
 	protected static String _CS_BranchingAngFire = "branchingAngFire";
 	protected static String _CS_BranchingOrder = "branchingOrder";
 	
-	protected BlueBattalionC2 blueC2;
-	protected BlueCompany bluePlatoon;
-	protected Sensor sensor;
-	protected Shooter shooter;
-
-	public BlueMA() {
+	private BlueBattalion _battalion;
+	
+	public BlueMA(CEInfo _myInfo, BlueBattalion _battalion) {
 		/*
 		 * Set Model Name
 		 */
@@ -74,11 +74,11 @@ public class BlueMA extends BasicMultiAgentModel {
 		 * Make C2
 		 */
 			
-		BlueBattalionC2 blueC2 = new BlueBattalionC2();
+		this._battalion = _battalion;
 		
-		blueC2.Activated();
+		_battalion.Activated();
 		
-		addComponent(blueC2);
+		addComponent(_battalion);
 		
 //		
 //		BluePlatoon bluePlatoon = new BluePlatoon();
