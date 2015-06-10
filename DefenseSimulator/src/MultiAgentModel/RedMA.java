@@ -1,5 +1,8 @@
 package MultiAgentModel;
 
+import java.util.ArrayList;
+
+import Common.CEInfo;
 import RedC2Model.RedBattalionC2;
 import RedC2Model.RedCompany;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
@@ -27,7 +30,9 @@ public class RedMA extends BasicMultiAgentModel {
 	protected static String _CS_BranchingAngDmg = "branchingAngDamage";
 	protected static String _CS_BranchingOrder = "branchingOrder";
 	
-	public RedMA() {
+	private ArrayList<RedBattalion> _battalionList;
+	
+	public RedMA(CEInfo _myInfo, ArrayList<RedBattalion> _battalionList) {
 		
 		String _name = "RedMultiAgent";
 		SetModelName(_name);
@@ -62,19 +67,14 @@ public class RedMA extends BasicMultiAgentModel {
 		 * Make C2
 		 */
 		
-		RedBattalionC2 redC2 = new RedBattalionC2();
-		redC2.Activated();
-		addComponent(redC2);
+		this._battalionList = _battalionList;
 		
-		/*
-		 * Make Platoon
-		 */
 		
-		int n = 1;
-		for(int i = 1;i < n;i++){
-			RedCompany redPlatoon = new RedCompany();
-			redPlatoon.Activated();
-			addComponent(redPlatoon);
+		for(RedBattalion _eachBattalion : _battalionList){
+			_eachBattalion.Activated();
+			this.addComponent(_eachBattalion);
+			
+			
 			
 			
 			AddCoupling(_CS_BranchingAngDmg, i, this, _IE_AngleDmgIn, redPlatoon, _IE_AngleDmgIn);
@@ -87,9 +87,8 @@ public class RedMA extends BasicMultiAgentModel {
 			AddCoupling(_CS_BranchingOrder, i, redC2, _INT_OrderOut, redPlatoon, _INT_OrderIn);
 			AddCoupling(_CS_Normal, true, redPlatoon, _INT_ReportOut, redC2, _INT_ReportIn);
 			
-			
+
 		}
-		
 		
 	}
 

@@ -1,6 +1,9 @@
 package BlueC2Model;
 
+import C2OrderMessage.MsgOrder;
+import C2OrderMessage.MsgReport;
 import Common.CEInfo;
+import Common.ReportType;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -25,9 +28,12 @@ public class BlueCompanyC2Action extends BasicActionModel {
 		/*
 		 * Add Input and output port
 		 */
-		AddInputEvent(_IE_OrderIn);
+		
+		AddInputEvent(_IE_ReportIn);
 		
 		AddOutputEvent(_OE_OrderOut);
+		
+		
 		AddOutputEvent(_OE_ReportOut);
 		
 		AddActState(_AS_Action, _AS.WAIT);
@@ -59,11 +65,25 @@ public class BlueCompanyC2Action extends BasicActionModel {
 	}
 
 	@Override
-	public boolean Perceive(Message arg0) {
-		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-			return true;
-		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
-			return true;
+	public boolean Perceive(Message msg) {
+		if(msg.GetDstEvent() == _IE_ReportIn){
+			//immediately process
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			
+			if(_reportMsg._reportType == ReportType.EnemyInfo){
+				
+			}else if(_reportMsg._reportType == ReportType.MyInfo){
+				
+			}
+			if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
+				return true;
+			}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
+				return true;
+			}
+		}else if(msg.GetDstEvent() == _IE_OrderIn){
+			// TODO will not happened
+			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
+			
 		}
 		return false;
 	}
