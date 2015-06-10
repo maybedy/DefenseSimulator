@@ -157,6 +157,14 @@ public class UUID {
 	
 /////////////////////////////////////////////
 	
+	public void setUUID(UUID _uuid){
+		this.setName(_uuid.getName());
+		this.setSide(_uuid.getSide());
+		this.setBattlionIndex(_uuid.getBattalionIndex());
+		this.setUnitType(_uuid.getUnitType());
+		this.setUnitIndex(_uuid.getUnitIndex());
+	}
+	
 	public String getString(){
 		//TODO make it
 		String name = "" ;

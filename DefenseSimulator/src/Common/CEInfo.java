@@ -26,7 +26,6 @@ public class CEInfo {
 	
 	
 	public CEInfo(){
-		_id = new UUID();
 		_myLoc = new XY();
 	}
 	
@@ -45,36 +44,24 @@ public class CEInfo {
 	}
 	
 	public double applyAssessment(){
-		
 		//TODO change dmg assessment function
-		
-		
 		double _newHP = _HP;
 		
 		return _newHP;
-		
 	}
 	
 	public double applyAssessment(MsgAngleDmg _msgAngleDmg){
-		
 		//TODO change dmg assessment function
-		
-		
 		double _newHP = _HP;
-		
+
 		return _newHP;
-		
 	}
 
 	public double applyAssessment(MsgDirectFire _msgDirectFire){
-		
 		//TODO change dmg assessment function
-		
-		
 		double _newHP = _HP;
 		
 		return _newHP;
-	
 	}
 	
 }
