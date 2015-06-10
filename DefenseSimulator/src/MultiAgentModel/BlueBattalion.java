@@ -38,7 +38,7 @@ public class BlueBattalion extends BasicMultiAgentModel {
 		AddOutputEvent(_OE_DirectFireOut);
 		
 		
-		_
+		
 		
 		
 	}

@@ -49,7 +49,6 @@ public class RedCompanyC2Action extends BasicActionModel {
 			return true;
 		}
 		return false;
-		return false;
 	}
 
 	@Override

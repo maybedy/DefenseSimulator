@@ -8,8 +8,6 @@ public class MsgDirectFire {
 	public WTType _type;
 		
 	public MsgDirectFire(){
-		_destUUID = new UUID();
-		_srcUUID = new UUID();
 	}
 	
 	public MsgDirectFire(UUID _destUUID, UUID _srcUUID, WTType _type){

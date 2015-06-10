@@ -1,6 +1,5 @@
 package RedC2Model;
 
-import BlueC2Model.BlueBattalionC2Action._AS;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
