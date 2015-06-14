@@ -6,6 +6,9 @@ import CommonInfo.CEInfo;
 import CommonInfo.UUID;
 import ModelAgent_RedC2.RedBattalionC2;
 import ModelAgent_RedC2.RedCompany;
+import MsgC2Report.MsgLocNotice;
+import MsgCommon.MsgAngleDmg;
+import MsgCommon.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -58,18 +61,41 @@ public class RedMA extends BasicMultiAgentModel {
 			_eachBattalion.Activated();
 			this.addComponent(_eachBattalion);
 			
+			UUID _batUUID = _eachBattalion._modelUUID;
 			
+			this.AddCoupling(_CS_MsgBranch, _batUUID.getUniqID_MAM(), this, this._IE_AngleDmgIn, _eachBattalion, _eachBattalion._IE_AngleDmgIn);
+			this.AddCoupling(_CS_MsgBranch, _batUUID.getUniqID_MAM(), this, this._IE_DirectFireIn, _eachBattalion, _eachBattalion._IE_DirectFireIn);
+			this.AddCoupling(_CS_MsgBranch, _batUUID.getUniqID_MAM(), this, this._IE_LocNoticeIn, _eachBattalion, _eachBattalion._IE_LocNoticeIn);
 
+			this.AddCoupling(_CS_Normal, true, _eachBattalion, _eachBattalion._OE_DirectFireOut, this, this._OE_DirectFireOut);
+			this.AddCoupling(_CS_Normal, true, _eachBattalion, _eachBattalion._OE_LocUpdateOut, this, this._OE_LocUpdateOut);
 		}
 		
 	}
 
 	@Override
-	public boolean Delta(Message arg0) {
-		// TODO Auto-generated method stub
-		
-		// TODO specification coupling state
-		return true;
+	public boolean Delta(Message msg) {
+		if(msg.GetDstEvent() == this._IE_AngleDmgIn){
+			MsgAngleDmg _angleDmgMsg = (MsgAngleDmg)msg.GetValue();
+			
+			
+			this.updateCouplingState(_CS_MsgBranch, _angleDmgMsg._destUUID.getUniqID_MAM(), true);
+			
+			return true;
+		}else if(msg.GetDstEvent() == this._IE_DirectFireIn){
+			MsgDirectFire _dirFireMsg = (MsgDirectFire)msg.GetValue();
+			
+			this.updateCouplingState(_CS_MsgBranch, _dirFireMsg._destUUID.getUniqID_MAM(), true);
+			return true;
+		}else if(msg.GetDstEvent() == this._IE_LocNoticeIn){
+			MsgLocNotice _locNotMsg = (MsgLocNotice)msg.GetValue();
+			
+			this.updateCouplingState(_CS_MsgBranch, _locNotMsg._destUUID.getUniqID_MAM(), true);
+			return true;
+		}else {
+			this.updateCouplingState(_CS_MsgBranch, -1, true);
+			return true;
+		}
 	}
 
 }

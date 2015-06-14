@@ -87,7 +87,7 @@ public class BlueBattalion extends BasicMultiAgentModel {
 			this.AddCoupling(_CS_MsgBranch, _eachCompany._modelUUID.getUniqID_Batt(), this, this._IE_LocNoticeIn, _eachCompany, _IE_LocNoticeIn);
 			
 			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_DirectFireOut, this, this._OE_DirectFireOut);
-			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_ReportOut, this, this._OE_LocUpdateOut);
+			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_LocUpdateOut, this, this._OE_LocUpdateOut);
 			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_ReportOut, _C2Agent,_C2Agent._IE_ReportIn);
 			
 		}

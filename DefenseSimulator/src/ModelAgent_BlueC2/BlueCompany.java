@@ -15,6 +15,7 @@ public class BlueCompany extends BasicAgentModel {
 	
 	public static String _OE_DirectFireOut = "DirectFireOut";
 	public static String _OE_ReportOut = "ReportOut";
+	public static String _OE_LocUpdateOut = "LocUpdateOut";
 	
 	public UUID _modelUUID;
 	
