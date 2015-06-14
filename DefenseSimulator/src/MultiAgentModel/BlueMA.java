@@ -6,7 +6,7 @@ import BlueC2Model.BlueBattalionC2;
 import BlueC2Model.BlueCompany;
 import BlueC2Model.Sensor;
 import BlueC2Model.Shooter;
-import Common.CEInfo;
+import CommonInfo.CEInfo;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 

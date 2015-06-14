@@ -1,7 +1,8 @@
 package BlueC2Model;
 
 import CEActionModel.Detection;
-import Common.CEInfo;
+import CommonInfo.CEInfo;
+import CommonInfo.UUID;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -9,11 +10,14 @@ public class Sensor extends BasicAgentModel {
 	public static String _IE_LocNoticeIn = "LocNoticeIn";
 	public static String _OE_ReportOut = "ReportOut";
 	
+	public UUID _modelUUID;
+	
 	protected static String _CS_Normal = "normal";
 
 	public Sensor(CEInfo _myInfo) {
 		String _name = "Sensor";
 		SetModelName(_name);
+		this._modelUUID = _myInfo._id;
 		
 		AddInputEvent(_IE_LocNoticeIn);
 		AddOutputEvent(_OE_ReportOut);

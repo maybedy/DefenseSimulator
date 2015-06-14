@@ -1,7 +1,8 @@
-package Common;
+package CommonMap;
 
 import java.util.ArrayList;
 
+import CommonInfo.XY;
 import edu.kaist.seslab.ldef.parser.scenario.ParameterGroup;
 
 public class GridInfoNetwork {

@@ -1,6 +1,5 @@
-package C2OrderMessage;
+package C2ReportMsgs;
 
-import Common.ReportType;
 
 public class MsgReport {
 	

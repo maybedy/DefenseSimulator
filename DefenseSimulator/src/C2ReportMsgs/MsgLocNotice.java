@@ -1,7 +1,8 @@
-package Message;
+package C2ReportMsgs;
 
 import java.util.ArrayList;
-import Common.*;
+import CommonInfo.CEInfo;
+import CommonInfo.UUID;
 
 public class MsgLocNotice {
 	public UUID _destUUID;

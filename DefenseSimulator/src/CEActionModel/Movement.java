@@ -2,12 +2,12 @@ package CEActionModel;
 
 import java.util.ArrayList;
 
-import C2OrderMessage.MsgMoveOrder;
-import Common.CEInfo;
-import Common.GridInfo;
-import Common.GridInfoNetwork;
-import Common.XY;
-import Message.MsgLocUpdate;
+import C2OrderMsgs.MsgMoveOrder;
+import C2ReportMsgs.MsgLocUpdate;
+import CommonInfo.CEInfo;
+import CommonInfo.XY;
+import CommonMap.GridInfo;
+import CommonMap.GridInfoNetwork;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 

@@ -1,6 +1,7 @@
 package Message;
 
-import Common.*;
+import CommonInfo.UUID;
+import CommonType.WTType;
 
 public class MsgDirectFire {
 	public UUID _destUUID;

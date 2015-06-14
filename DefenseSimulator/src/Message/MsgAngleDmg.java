@@ -1,6 +1,6 @@
 package Message;
 
-import Common.*;
+import CommonInfo.UUID;
 
 public class MsgAngleDmg {
 	public UUID _destUUID;

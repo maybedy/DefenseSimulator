@@ -1,6 +1,7 @@
 package Message;
 
-import Common.*;
+import CommonInfo.XY;
+import CommonType.WTTypeAngleParam;
 
 public class MsgAngleFire {
 	public WTTypeAngleParam _angleFireParam;

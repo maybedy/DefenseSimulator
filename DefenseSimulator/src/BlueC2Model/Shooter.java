@@ -1,7 +1,8 @@
 package BlueC2Model;
 
 import CEActionModel.AngleEngagement;
-import Common.CEInfo;
+import CommonInfo.CEInfo;
+import CommonInfo.UUID;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -10,12 +11,15 @@ public class Shooter extends BasicAgentModel {
 	public static String _IE_OrderIn = "OrderIn";
 	public static String _OE_AngleFireOut = "AngleFireOut";
 	
+	public UUID _modelUUID; 
 	
 	protected static String _CS_Normal = "normal";
 
 	public Shooter(CEInfo _myInfo) {
 		String _name = "Shooter";
 		SetModelName(_name);
+		
+		this._modelUUID = _myInfo._id;
 		
 		
 		AddInputEvent(_IE_OrderIn);

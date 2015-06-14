@@ -1,12 +1,12 @@
 package CEActionModel;
 
-import C2OrderMessage.MsgDirEngOrder;
-import C2OrderMessage.MsgOrder;
-import Common.CEInfo;
-import Common.DmgState;
-import Common.OrderType;
-import Common.UUID;
-import Common.WTType;
+import C2OrderMsgs.MsgDirEngOrder;
+import C2OrderMsgs.MsgOrder;
+import C2OrderMsgs.OrderType;
+import CommonInfo.CEInfo;
+import CommonInfo.DmgState;
+import CommonInfo.UUID;
+import CommonType.WTType;
 import Message.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;

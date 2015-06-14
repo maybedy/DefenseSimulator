@@ -1,23 +1,28 @@
 package BlueC2Model;
 
-import Common.CEInfo;
+import CommonInfo.CEInfo;
+import CommonInfo.UUID;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class BlueBattalionC2 extends BasicAgentModel {
 	
 	
-	public static String _IE_OrderIn = "OrderIn";
+	private static String _IE_OrderIn = "OrderIn";
 	public static String _IE_ReportIn = "ReportIn";
 	
 	public static String _OE_OrderOut = "OrderOut";
-	public static String _OE_ReportOut = "ReportOut";
+	private static String _OE_ReportOut = "ReportOut";
 
 	protected static String _CS_Normal = "normal";
+	
+	public UUID _modelUUID;
 
 	public BlueBattalionC2(CEInfo _myInfo) {
 		String _name = "BlueBattalionC2";
 		SetModelName(_name);
+		this._modelUUID = _myInfo._id;
+		
 		
 		/*
 		 * Add Input and output port

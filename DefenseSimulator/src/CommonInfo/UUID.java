@@ -1,4 +1,4 @@
-package Common;
+package CommonInfo;
 
 import javax.swing.text.StyledEditorKit.BoldAction;
 
@@ -153,6 +153,18 @@ public class UUID {
 	
 	public int getUnitIndex(){
 		return _unitIndex;
+	}
+	
+	public int getUniqID_Batt(){
+		return _unitType.getV()*10+_unitIndex;
+	}
+	
+	public int getUniqID_MAM(){
+		return this.getBattalionIndex();
+	}
+	
+	public int getUniqID_ABM(){
+		return this.getSide().getV();
 	}
 	
 /////////////////////////////////////////////

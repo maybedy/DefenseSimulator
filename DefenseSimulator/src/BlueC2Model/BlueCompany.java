@@ -3,7 +3,8 @@ package BlueC2Model;
 import CEActionModel.DamageAssessment;
 import CEActionModel.Detection;
 import CEActionModel.DirectEngagement;
-import Common.CEInfo;
+import CommonInfo.CEInfo;
+import CommonInfo.UUID;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -15,11 +16,14 @@ public class BlueCompany extends BasicAgentModel {
 	public static String _OE_DirectFireOut = "DirectFireOut";
 	public static String _OE_ReportOut = "ReportOut";
 	
+	public UUID _modelUUID;
+	
 	protected static String _CS_Normal = "normal";
 
 	public BlueCompany(CEInfo _myInfo) {
 		String _name = "BluePlatoon";
 		SetModelName(_name);
+		this._modelUUID = _myInfo._id;
 		
 		/*
 		 * Add Input and Output port

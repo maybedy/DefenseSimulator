@@ -1,4 +1,4 @@
-package Common;
+package CommonInfo;
 
 import java.util.Random;
 

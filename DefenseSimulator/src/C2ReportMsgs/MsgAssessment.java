@@ -1,6 +1,5 @@
-package Message;
+package C2ReportMsgs;
 
-import Common.*;
 
 public class MsgAssessment {
 	public double _newHP;

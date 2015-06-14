@@ -1,8 +1,8 @@
 package RedC2Model;
 
-import C2OrderMessage.MsgOrder;
-import C2OrderMessage.MsgReport;
-import Common.ReportType;
+import C2OrderMsgs.MsgOrder;
+import C2ReportMsgs.MsgReport;
+import C2ReportMsgs.ReportType;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 

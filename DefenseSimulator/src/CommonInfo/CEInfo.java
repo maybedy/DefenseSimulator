@@ -1,5 +1,9 @@
-package Common;
+package CommonInfo;
 
+import CommonMap.GridInfo;
+import CommonType.CEType;
+import CommonType.WTType;
+import CommonType.WTTypeParam;
 import Message.MsgAngleDmg;
 import Message.MsgDirectFire;
 

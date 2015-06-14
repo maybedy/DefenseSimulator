@@ -2,10 +2,10 @@ package CEActionModel;
 
 import java.util.ArrayList;
 
-import Common.CEInfo;
+import C2ReportMsgs.MsgAssessment;
+import CommonInfo.CEInfo;
 import Message.MsgAngleDmg;
 import Message.MsgAngleFire;
-import Message.MsgAssessment;
 import Message.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;

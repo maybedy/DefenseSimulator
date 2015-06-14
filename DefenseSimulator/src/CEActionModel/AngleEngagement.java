@@ -2,9 +2,9 @@ package CEActionModel;
 
 import java.util.ArrayList;
 
-import C2OrderMessage.MsgFireOrder;
-import C2OrderMessage.MsgOrder;
-import Common.CEInfo;
+import C2OrderMsgs.MsgFireOrder;
+import C2OrderMsgs.MsgOrder;
+import CommonInfo.CEInfo;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 

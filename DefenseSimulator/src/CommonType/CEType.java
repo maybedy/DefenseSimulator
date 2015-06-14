@@ -1,4 +1,4 @@
-package Common;
+package CommonType;
 
 public enum CEType {
 	Unknown(0),

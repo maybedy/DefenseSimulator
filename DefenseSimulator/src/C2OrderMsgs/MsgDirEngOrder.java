@@ -1,7 +1,6 @@
-package C2OrderMessage;
+package C2OrderMsgs;
 
-import Common.CEInfo;
-import Common.OrderType;
+import CommonInfo.CEInfo;
 
 public class MsgDirEngOrder  {
 	

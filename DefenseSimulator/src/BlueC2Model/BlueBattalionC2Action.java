@@ -1,19 +1,19 @@
 package BlueC2Model;
 
-import C2OrderMessage.MsgOrder;
-import C2OrderMessage.MsgReport;
-import Common.CEInfo;
-import Common.ReportType;
+import C2OrderMsgs.MsgOrder;
+import C2ReportMsgs.MsgReport;
+import C2ReportMsgs.ReportType;
+import CommonInfo.CEInfo;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class BlueBattalionC2Action extends BasicActionModel {
 	
-	public static String _IE_OrderIn = "OrderIn";
+	private static String _IE_OrderIn = "OrderIn";
 	public static String _IE_ReportIn = "ReportIn";
 	
 	public static String _OE_OrderOut = "OrderOut";
-	public static String _OE_ReportOut = "ReportOut";
+	private static String _OE_ReportOut = "ReportOut";
 	
 	private static String _AS_Action = "Action";
 	private enum _AS{

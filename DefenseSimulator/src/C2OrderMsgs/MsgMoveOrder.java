@@ -1,8 +1,8 @@
-package C2OrderMessage;
+package C2OrderMsgs;
 
 import java.util.ArrayList;
 
-import Common.XY;
+import CommonInfo.XY;
 
 public class MsgMoveOrder {
 	

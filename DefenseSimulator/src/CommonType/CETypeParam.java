@@ -1,4 +1,4 @@
-package Common;
+package CommonType;
 
 import java.util.ArrayList;
 

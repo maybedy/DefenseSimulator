@@ -1,6 +1,6 @@
-package Common;
+package CommonType;
 
-import Common.WTTypeParam.FireType;
+import CommonType.WTTypeParam.FireType;
 
 public class WTTypeDirectParam extends WTTypeParam {
 	// TODO Fill 

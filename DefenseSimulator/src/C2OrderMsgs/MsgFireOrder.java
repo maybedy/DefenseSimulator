@@ -1,6 +1,6 @@
-package C2OrderMessage;
+package C2OrderMsgs;
 
-import Common.CEInfo;
+import CommonInfo.CEInfo;
 
 public class MsgFireOrder {
 	public CEInfo _enemyInfo;

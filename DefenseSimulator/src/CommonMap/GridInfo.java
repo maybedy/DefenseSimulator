@@ -1,4 +1,6 @@
-package Common;
+package CommonMap;
+
+import CommonInfo.XY;
 
 public class GridInfo {
 	

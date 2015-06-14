@@ -1,6 +1,6 @@
-package Message;
+package C2ReportMsgs;
 
-import Common.*;
+import CommonInfo.CEInfo;
 
 public class MsgLocUpdate {
 	public CEInfo _myInfo;

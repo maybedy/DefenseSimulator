@@ -6,7 +6,10 @@ import BlueC2Model.BlueBattalionC2;
 import BlueC2Model.BlueCompany;
 import BlueC2Model.Sensor;
 import BlueC2Model.Shooter;
-import Common.CEInfo;
+import C2OrderMsgs.MsgOrder;
+import C2ReportMsgs.MsgLocNotice;
+import CommonInfo.CEInfo;
+import Message.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -19,6 +22,10 @@ public class BlueBattalion extends BasicMultiAgentModel {
 	
 	public static String _OE_AngleFireOut = "AngleFireOut";
 	public static String _OE_DirectFireOut = "DirectFireOut";
+	public static String _OE_LocUpdateOut = "LocUpdateOut";
+	
+	private static String _CS_Normal = "Normal";
+	private static String _CS_MsgBranch = "Branch";
 	
 	private BlueBattalionC2 _C2Agent;
 	private ArrayList<BlueCompany> _CompanyList;
@@ -37,17 +44,79 @@ public class BlueBattalion extends BasicMultiAgentModel {
 		AddOutputEvent(_OE_AngleFireOut);
 		AddOutputEvent(_OE_DirectFireOut);
 		
+		this.AddCouplingState(_CS_Normal, true);
 		
 		
+		this._C2Agent = _C2Agent;
+		_C2Agent.Activated();
+		this.addComponent(_C2Agent);
+		
+		this._SensorList = _SensorList;
+		for(Sensor _eachSensor: _SensorList)
+		{
+			_eachSensor.Activated();
+			this.addComponent(_eachSensor);
+			
+			this.AddCoupling(_CS_MsgBranch, _eachSensor._modelUUID.getUniqID_ABM(), this, this._IE_LocNoticeIn, _eachSensor, _eachSensor._IE_LocNoticeIn);
+			
+			this.AddCoupling(_CS_Normal, true, _eachSensor, _eachSensor._OE_ReportOut, _C2Agent, _C2Agent._IE_ReportIn);
+		}
+		
+		this._ShooterList = _ShooterList;
+		for(Shooter _eachShooter : _ShooterList){
+			_eachShooter.Activated();
+			this.addComponent(_eachShooter);
+			
+			this.AddCoupling(_CS_MsgBranch, _eachShooter._modelUUID.getUniqID_Batt(), _C2Agent, _C2Agent._OE_OrderOut, _eachShooter, _eachShooter._IE_OrderIn);
+			
+			this.AddCoupling(_CS_Normal, true, _eachShooter, _eachShooter._OE_AngleFireOut, this, this._OE_AngleFireOut);
+		}
+
+		this._CompanyList = _CompanyList;
+		for(BlueCompany _eachCompany : _CompanyList){
+			
+			_eachCompany.Activated();
+			this.addComponent(_eachCompany);
+			
+			this.AddCoupling(_CS_MsgBranch, _eachCompany._modelUUID.getUniqID_Batt(), this, this._IE_DirectFireIn, _eachCompany, _eachCompany._IE_DirectFireIn);
+			this.AddCoupling(_CS_MsgBranch, _eachCompany._modelUUID.getUniqID_Batt(), this, this._IE_LocNoticeIn, _eachCompany, _IE_LocNoticeIn);
+			
+			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_DirectFireOut, this, this._OE_DirectFireOut);
+			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_ReportOut, this, this._OE_LocUpdateOut);
+			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_ReportOut, _C2Agent,_C2Agent._IE_ReportIn);
+			
+		}
 		
 		
 	}
 
 	@Override
-	public boolean Delta(Message arg0) {
+	public boolean Delta(Message msg) {
 		// TODO Auto-generated method stub
-		this.
-		return false;
+		if(msg.GetDstEvent() == _C2Agent._OE_OrderOut){
+			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
+			
+			this.updateCouplingState(_CS_MsgBranch, _orderMsg._destUUID.getUniqID_Batt(), true);
+			return true;
+		}
+		else if(msg.GetDstEvent() == _IE_DirectFireIn){
+			MsgDirectFire _directFireMsg = (MsgDirectFire)msg.GetValue();
+			
+			this.updateCouplingState(_CS_MsgBranch, _directFireMsg._destUUID.getUniqID_Batt(), true);
+			
+			return true;
+			
+		}else if(msg.GetDstEvent() == _IE_LocNoticeIn){
+			MsgLocNotice _locNoticeMsg = (MsgLocNotice)msg.GetValue();
+			
+			this.updateCouplingState(_CS_MsgBranch, _locNoticeMsg._destUUID.getUniqID_Batt(), true);
+			return true;
+		}else {
+			this.updateCouplingState(_CS_MsgBranch, -1, true);
+			
+			return true;
+		}
+		
 	}
 
 }

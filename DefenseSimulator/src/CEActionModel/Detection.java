@@ -2,9 +2,9 @@ package CEActionModel;
 
 import java.util.ArrayList;
 
-import Common.CEInfo;
-import Message.MsgLocNotice;
-import Message.MsgLocUpdate;
+import C2ReportMsgs.MsgLocNotice;
+import C2ReportMsgs.MsgLocUpdate;
+import CommonInfo.CEInfo;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 

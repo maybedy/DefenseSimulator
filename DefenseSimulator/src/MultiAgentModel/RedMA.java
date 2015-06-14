@@ -2,7 +2,7 @@ package MultiAgentModel;
 
 import java.util.ArrayList;
 
-import Common.CEInfo;
+import CommonInfo.CEInfo;
 import RedC2Model.RedBattalionC2;
 import RedC2Model.RedCompany;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
