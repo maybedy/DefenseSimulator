@@ -22,7 +22,7 @@ public class BlueCompany extends BasicAgentModel {
 	protected static String _CS_Normal = "normal";
 
 	public BlueCompany(CEInfo _myInfo) {
-		String _name = "BluePlatoon";
+		String _name = "BlueCompany";
 		SetModelName(_name);
 		this._modelUUID = _myInfo._id;
 		
@@ -34,8 +34,8 @@ public class BlueCompany extends BasicAgentModel {
 		
 		AddOutputEvent(_OE_DirectFireOut);
 		AddOutputEvent(_OE_ReportOut);
+		AddOutputEvent(_OE_LocUpdateOut);
 		
-		AddCouplingState(_CS_Normal, true);
 		
 		
 		BlueCompanyC2Action bPC2 = new BlueCompanyC2Action(_myInfo);
@@ -49,6 +49,7 @@ public class BlueCompany extends BasicAgentModel {
 		detAction.Activated();
 		engment.Activated();
 		
+		AddCouplingState(_CS_Normal, true);
 		
 		AddCoupling(_CS_Normal, true, this, _IE_LocNoticeIn, detAction, detAction._IE_LocNoticeIn);
 		AddCoupling(_CS_Normal, true, this, _IE_DirectFireIn, dmgAss, dmgAss._IE_DirectFireIn);
@@ -57,10 +58,15 @@ public class BlueCompany extends BasicAgentModel {
 		AddCoupling(_CS_Normal, true, engment, engment._OE_DirectFireOut, this, _OE_DirectFireOut);
 		
 		AddCoupling(_CS_Normal, true, detAction, detAction._OE_ReportOut, bPC2, bPC2._IE_ReportIn);
-		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, bPC2, bPC2._IE_ReportIn);
 		
 		AddCoupling(_CS_Normal, true, bPC2, bPC2._OE_OrderOut, engment, engment._IE_OrderIn);
 		
+			
+		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, bPC2, bPC2._IE_ReportIn);
+		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, this, this._OE_LocUpdateOut);
+		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, detAction, detAction._IE_LocUpdate);
+		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, engment, engment._IE_MyInfoIn);
+		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, this, this._OE_LocUpdateOut);		
 		
 	}
 

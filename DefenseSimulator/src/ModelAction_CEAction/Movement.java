@@ -3,11 +3,14 @@ package ModelAction_CEAction;
 import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
+import CommonInfo.UUID;
 import CommonInfo.XY;
 import CommonMap.GridInfo;
 import CommonMap.GridInfoNetwork;
 import MsgC2Order.MsgMoveOrder;
 import MsgC2Report.MsgLocUpdate;
+import MsgC2Report.MsgReport;
+import MsgC2Report.ReportType;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -25,8 +28,9 @@ public class Movement extends BasicActionModel {
 	 
 	private static String _AWS_CurrentPath = "CurrentPath"; // ArrayList<XY> 
 	
-	
 	private static String _AS_Action = "Action";
+	
+	public UUID _modelUUID;
 	
 	private enum _AS{
 		Stop, Move
@@ -38,6 +42,7 @@ public class Movement extends BasicActionModel {
 		String _name = "MovementAction";
 		SetModelName(_name);
 		
+		this._modelUUID = _myInfo._id;
 		this._PARAM_MaxSpeed = _myInfo._maxSpeed;
 		
 		/*
@@ -128,7 +133,8 @@ public class Movement extends BasicActionModel {
 			
 			this.UpdateConStateValue(_CS_MyInfo, _newInfo);
 			MsgLocUpdate _locUpdateMsg = new MsgLocUpdate(_newInfo);
-			msg.SetValue(_OE_LocUpdateOut, _locUpdateMsg);
+			MsgReport _reportMsg = new MsgReport(ReportType.MyInfo, this._modelUUID, null, _locUpdateMsg);
+			msg.SetValue(_OE_LocUpdateOut, _reportMsg);
 			
 			return true;
 		}

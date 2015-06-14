@@ -3,7 +3,11 @@ package ModelAction_CEAction;
 import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
+import CommonInfo.UUID;
 import MsgC2Report.MsgAssessment;
+import MsgC2Report.MsgLocUpdate;
+import MsgC2Report.MsgReport;
+import MsgC2Report.ReportType;
 import MsgCommon.MsgAngleDmg;
 import MsgCommon.MsgAngleFire;
 import MsgCommon.MsgDirectFire;
@@ -27,6 +31,8 @@ public class DamageAssessment extends BasicActionModel {
 	
 	private static String _AS_Action = "Action";
 	
+	public UUID _modelUUID;
+	
 	private enum _ActState {
 		Stop, Calculate
 	}
@@ -34,6 +40,8 @@ public class DamageAssessment extends BasicActionModel {
 	public DamageAssessment(CEInfo _myInfo) {
 		String _name = "DamageAssessmentAction";
 		SetModelName(_name);
+		
+		this._modelUUID = _myInfo._id;
 		
 		AddInputEvent(_IE_AngleDmgIn);
 		AddInputEvent(_IE_DirectFireIn);
@@ -82,14 +90,17 @@ public class DamageAssessment extends BasicActionModel {
 				_newHP = _myInfo.applyAssessment(_directFireMsg);
 				
 			}
-			
+			/*
 			MsgAssessment _assessMsg = new MsgAssessment(_newHP);
-			_myInfo._HP = _newHP;
+			_myInfo._HP = _newHP;*/
+			
+			MsgLocUpdate _myInfoMsg = new MsgLocUpdate(_myInfo);
+			MsgReport _reportMsg = new MsgReport(ReportType.MyInfo, this._modelUUID, null, _myInfoMsg);
 			
 			this.UpdateConStateValue(_CS_MyHP, _newHP);
 			this.UpdateConStateValue(_CS_MyInfo, _myInfo);
 			
-			msg.SetValue(_OE_AssessOut, _assessMsg);
+			msg.SetValue(_OE_AssessOut, _reportMsg);
 			return true;
 		}
 		return false;

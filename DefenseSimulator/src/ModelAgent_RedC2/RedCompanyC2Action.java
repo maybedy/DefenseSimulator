@@ -1,5 +1,6 @@
 package ModelAgent_RedC2;
 
+import CommonInfo.CEInfo;
 import MsgC2Order.MsgOrder;
 import MsgC2Report.MsgReport;
 import MsgC2Report.ReportType;
@@ -9,7 +10,7 @@ import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 public class RedCompanyC2Action extends BasicActionModel {
 
 	public static String _IE_ReportIn = "ReportIn";
-	private static String _IE_OrderIn = "OrderIn";
+	public static String _IE_OrderIn = "OrderIn";
 	
 	public static String _OE_ReportOut = "ReportOut";
 	public static String _OE_OrderOut = "OrderOut";
@@ -21,8 +22,8 @@ public class RedCompanyC2Action extends BasicActionModel {
 	}
 
 	
-	public RedCompanyC2Action() {
-		String _name = "BlueCompanyC2Action";
+	public RedCompanyC2Action(CEInfo _myInfo) {
+		String _name = "RedCompanyC2Action";
 		SetModelName(_name);
 		
 		/*
