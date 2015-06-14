@@ -4,8 +4,8 @@ import CommonMap.GridInfo;
 import CommonType.CEType;
 import CommonType.WTType;
 import CommonType.WTTypeParam;
-import Message.MsgAngleDmg;
-import Message.MsgDirectFire;
+import MsgCommon.MsgAngleDmg;
+import MsgCommon.MsgDirectFire;
 
 public class CEInfo {
 	public UUID _id;
