@@ -95,7 +95,7 @@ public class DamageAssessment extends BasicActionModel {
 			_myInfo._HP = _newHP;*/
 			
 			MsgLocUpdate _myInfoMsg = new MsgLocUpdate(_myInfo);
-			MsgReport _reportMsg = new MsgReport(ReportType.MyInfo, this._modelUUID, null, _myInfoMsg);
+			MsgReport _reportMsg = new MsgReport(ReportType.Assessment, this._modelUUID, null, _myInfoMsg);
 			
 			this.UpdateConStateValue(_CS_MyHP, _newHP);
 			this.UpdateConStateValue(_CS_MyInfo, _myInfo);

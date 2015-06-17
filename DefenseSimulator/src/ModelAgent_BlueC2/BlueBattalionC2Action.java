@@ -92,14 +92,14 @@ public class BlueBattalionC2Action extends BasicActionModel {
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
 				this.UpdateActStateValue(_AS_Action, _AS.PROC);
-			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.MyInfo){
+			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
 				Continue();
 			}
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
 				Continue();
-			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.MyInfo){
+			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
 				Continue();
 			}else if(this.GetAWStateValue(_AWS_RecentReport) == null){
 				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
@@ -136,11 +136,12 @@ public class BlueBattalionC2Action extends BasicActionModel {
 				
 				this.UpdateAWStateValue(_AWS_WaitedOrder, _storedOrder);
 				
-			}else if(_reportMsg._reportType == ReportType.MyInfo){
-				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.MyInfo);
-				
-				
+			}else if(_reportMsg._reportType == ReportType.LocationChange){
+				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
+			}else if(_reportMsg._reportType == ReportType.Assessment){
+				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.Assessment);
 			}
+			
 		}
 		return false;
 	}

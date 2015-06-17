@@ -133,7 +133,7 @@ public class Movement extends BasicActionModel {
 			
 			this.UpdateConStateValue(_CS_MyInfo, _newInfo);
 			MsgLocUpdate _locUpdateMsg = new MsgLocUpdate(_newInfo);
-			MsgReport _reportMsg = new MsgReport(ReportType.MyInfo, this._modelUUID, null, _locUpdateMsg);
+			MsgReport _reportMsg = new MsgReport(ReportType.LocationChange, this._modelUUID, null, _locUpdateMsg);
 			msg.SetValue(_OE_LocUpdateOut, _reportMsg);
 			
 			return true;

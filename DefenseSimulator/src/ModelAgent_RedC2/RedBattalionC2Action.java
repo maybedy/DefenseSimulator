@@ -14,6 +14,9 @@ public class RedBattalionC2Action extends BasicActionModel {
 	
 	public static String _OE_OrderOut = "OrderOut";
 	public static String _OE_ReportOut = "ReportOut";
+	
+	
+	private static String _CS_BSpreadOut = "SpreadOutStatus"; // Map<index, boolean>
 
 	private static String _AS_Action = "Action";
 	private enum _AS{
@@ -68,7 +71,9 @@ public class RedBattalionC2Action extends BasicActionModel {
 			
 			if(_reportMsg._reportType == ReportType.EnemyInfo){
 				
-			}else if(_reportMsg._reportType == ReportType.MyInfo){
+			}else if(_reportMsg._reportType == ReportType.LocationChange){
+				
+			}else if(_reportMsg._reportType == ReportType.Assessment){
 				
 			}
 			if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
