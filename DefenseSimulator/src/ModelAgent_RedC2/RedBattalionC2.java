@@ -1,5 +1,8 @@
 package ModelAgent_RedC2;
 
+import java.util.ArrayList;
+
+import CommonInfo.CEInfo;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -12,7 +15,7 @@ public class RedBattalionC2 extends BasicAgentModel {
 	protected static String _CS_Normal = "normal";
 
 
-	public RedBattalionC2() {
+	public RedBattalionC2(CEInfo _myInfo, ArrayList<RedCompany> _companyList) {
 		String _name = "RedC2";
 		SetModelName(_name);
 		
@@ -34,7 +37,7 @@ public class RedBattalionC2 extends BasicAgentModel {
 		 * AddComponent
 		 */
 		
-		RedBattalionC2Action redC2Action = new RedBattalionC2Action();
+		RedBattalionC2Action redC2Action = new RedBattalionC2Action(_myInfo, _companyList);
 		redC2Action.Activated();
 		AddActionModel(redC2Action);
 		

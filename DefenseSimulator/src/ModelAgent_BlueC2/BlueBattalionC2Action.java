@@ -38,7 +38,7 @@ public class BlueBattalionC2Action extends BasicActionModel {
 	public UUID _modelUUID;
 
 
-	public BlueBattalionC2Action(CEInfo _myInfo, ArrayList<CEInfo> _companyList, ArrayList<CEInfo> _shooterList) {
+	public BlueBattalionC2Action(CEInfo _myInfo, ArrayList<BlueCompany> _companyList, ArrayList<Shooter> _shooterList) {
 		String _name = "BlueBattalionC2Action";
 		SetModelName(_name);
 		
@@ -88,12 +88,15 @@ public class BlueBattalionC2Action extends BasicActionModel {
 	@Override
 	public boolean Decide() {
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
+			ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+			if(_orderList.isEmpty()){
+				//TODO Continue();
+				
+			}else {
 				this.UpdateActStateValue(_AS_Action, _AS.PROC);
-			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				Continue();
 			}
 			return true;
+
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
 				Continue();

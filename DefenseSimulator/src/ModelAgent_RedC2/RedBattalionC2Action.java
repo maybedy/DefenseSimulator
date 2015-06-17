@@ -7,7 +7,8 @@ import CommonInfo.CEInfo;
 import CommonInfo.UUID;
 import CommonInfo.XY;
 import CommonMap.GridInfo;
-import ModelAgent_BlueC2.BlueCompany;
+import CommonPathFinder.PathFinder;
+import MsgC2Order.MsgMoveOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
 import MsgC2Report.MsgLocUpdate;
@@ -46,7 +47,7 @@ public class RedBattalionC2Action extends BasicActionModel {
 	
 	public UUID _myUUID;
 
-	public RedBattalionC2Action(CEInfo myInfo, ArrayList<BlueCompany> _companyList) {
+	public RedBattalionC2Action(CEInfo myInfo, ArrayList<RedCompany> _companyList) {
 		String _name = "RedBattalionC2Action";
 		SetModelName(_name);
 		
@@ -61,22 +62,32 @@ public class RedBattalionC2Action extends BasicActionModel {
 		AddOutputEvent(_OE_OrderOut);
 		AddOutputEvent(_OE_ReportOut);
 
-		AddActState(_AS_Action, _AS.WAIT);
+		AddActState(_AS_Action, _AS.PROC);
 		
 		AddConState(_CS_STATUS, _STATUS.ACTIVATE);
 		
 		HashMap<Integer, Boolean> _spreadOutStatus = new HashMap<Integer, Boolean>();
-		for(BlueCompany eachCompany : _companyList){
+		ArrayList<MsgOrder> _waitedOrder = new ArrayList<MsgOrder>();
+		
+		for(RedCompany eachCompany : _companyList){
 			UUID _comInfo = eachCompany._modelUUID;
 			Integer uniqID = new Integer(_comInfo.getUniqID_Batt());
 			_spreadOutStatus.put(uniqID, true);
+			
+			ArrayList<XY> _path = PathFinder.getPath(,,,);
+			
+			MsgMoveOrder _moveOrder = new MsgMoveOrder(_path);
+			MsgOrder _orderMsg = new MsgOrder(OrderType.Move, this._myUUID, _comInfo, _moveOrder);
+			_waitedOrder.add(_orderMsg);
+			
 		}
+		
+		AddAwState(_AWS_WaitedOrder, _waitedOrder);
 		AddConState(_CS_BSpreadOut, _spreadOutStatus);
+
 		
 		AddConState(_CS_CompanyList, _companyList);
 		
-		
-		AddAwState(_AWS_WaitedOrder, new ArrayList<MsgOrder>());
 		AddAwState(_AWS_RecentReport, null);
 	}
 
@@ -85,8 +96,17 @@ public class RedBattalionC2Action extends BasicActionModel {
 		this.UpdateAWStateValue(_AWS_RecentReport, null);
 		
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
+			// will not be happened
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
+			ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+			
+			MsgOrder _orderMsg = _orderList.remove(0);
+			
+			this.UpdateAWStateValue(_AWS_WaitedOrder, _orderList);
+			
+			msg.SetValue(_OE_OrderOut, _orderMsg);
+			
 			return true;
 		}
 		return false;
@@ -95,12 +115,33 @@ public class RedBattalionC2Action extends BasicActionModel {
 	@Override
 	public boolean Decide() {
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-			this.UpdateActStateValue(_AS_Action, _AS.PROC);
+			ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+			if(_orderList.isEmpty()){
+				//TODO Continue();
+				
+			}else {
+				this.UpdateActStateValue(_AS_Action, _AS.PROC);
+			}
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
-			this.UpdateActStateValue(_AS_Action, _AS.WAIT);
-			return true;
+			if(this.GetAWStateValue(_AWS_RecentReport) == null){
+				
+				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+				if(_orderList.isEmpty()){
+					this.UpdateActStateValue(_AS_Action, _AS.WAIT);	
+				}else {
+					this.UpdateActStateValue(_AS_Action, _AS.PROC);
+				}
+				
+				return true;
+			}else {
+				// TODO Continue();
+				
+				return true;
+			}
+			
 		}
+		
 		return false;
 	}
 	
@@ -154,7 +195,7 @@ public class RedBattalionC2Action extends BasicActionModel {
 					Continue();
 					return true;
 				}else {
-					MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, null);
+					MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, true);
 					ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 					_waitedOrder.add(_orderMsg);
 					this.UpdateAWStateValue(_AWS_WaitedOrder, _waitedOrder);
@@ -181,24 +222,27 @@ public class RedBattalionC2Action extends BasicActionModel {
 					GridInfo _currentGrid = _companyInfo._currentGrid;
 					XY _currentLoc = _companyInfo._myLoc;
 					if(_currentGrid._mainLoc.equalsWithError(_currentLoc)){
-						if(){
-							MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, null);
+						if(_currentGrid._gridIndex == ){// TODO check spreadout place
+							MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, false);
 							ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 							_waitedOrder.add(_orderMsg);
 							this.UpdateAWStateValue(_AWS_WaitedOrder, _waitedOrder);
+
+							if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
+								return true;
+							}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
+								Continue();
+								return true;
+							}
 						}else {
-							
+							Continue();
+							return true;
 						}
 					}else {
-						
-					}
-					
-					if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-						return true;
-					}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 						Continue();
 						return true;
 					}
+					
 				}
 
 				

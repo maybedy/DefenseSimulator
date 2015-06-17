@@ -1,5 +1,9 @@
 package ModelAgent_BlueC2;
 
+import java.util.ArrayList;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import CommonInfo.CEInfo;
 import CommonInfo.UUID;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
@@ -18,7 +22,7 @@ public class BlueBattalionC2 extends BasicAgentModel {
 	
 	public UUID _modelUUID;
 
-	public BlueBattalionC2(CEInfo _myInfo) {
+	public BlueBattalionC2(CEInfo _myInfo, ArrayList<BlueCompany> _companyList, ArrayList<Shooter> _shooterList) {
 		String _name = "BlueBattalionC2";
 		SetModelName(_name);
 		this._modelUUID = _myInfo._id;
@@ -44,7 +48,7 @@ public class BlueBattalionC2 extends BasicAgentModel {
 		 * AddComponent
 		 */
 		
-		BlueBattalionC2Action blueC2Action = new BlueBattalionC2Action(_myInfo);
+		BlueBattalionC2Action blueC2Action = new BlueBattalionC2Action(_myInfo, _companyList, _shooterList);
 		blueC2Action.Activated();
 		AddActionModel(blueC2Action);
 		

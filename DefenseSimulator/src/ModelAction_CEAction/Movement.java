@@ -8,6 +8,8 @@ import CommonInfo.XY;
 import CommonMap.GridInfo;
 import CommonMap.GridInfoNetwork;
 import MsgC2Order.MsgMoveOrder;
+import MsgC2Order.MsgOrder;
+import MsgC2Order.OrderType;
 import MsgC2Report.MsgLocUpdate;
 import MsgC2Report.MsgReport;
 import MsgC2Report.ReportType;
@@ -73,7 +75,7 @@ public class Movement extends BasicActionModel {
 	}
 	
 	private boolean isArrive(XY currentLoc, XY dest){
-		if(currentLoc.distance(dest)<= 10){
+		if(currentLoc.equalsWithError(dest)){
 			return true;
 		}
 		return false;
@@ -162,12 +164,18 @@ public class Movement extends BasicActionModel {
 	@Override
 	public boolean Perceive(Message msg) {
 		if(msg.GetDstEvent() == _IE_MyInfo){
-			MsgLocUpdate _myInfoMsg = (MsgLocUpdate)msg.GetValue();
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			MsgLocUpdate _myInfoMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			this.UpdateConStateValue(_CS_MyInfo, _myInfoMsg._myInfo);
 		}else if(msg.GetDstEvent() == _IE_OrderIn){
+			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
+			if(_orderMsg._orderType == OrderType.STOP){
+				this.UpdateAWStateValue(_AWS_CurrentPath, null);
+			}else if(_orderMsg._orderType == OrderType.Move){
+				MsgMoveOrder _moveOrderMsg = (MsgMoveOrder)_orderMsg._orderMsg;
+				this.UpdateAWStateValue(_AWS_CurrentPath, _moveOrderMsg.getPath());
+			}
 			
-			MsgMoveOrder _moveOrderMsg = (MsgMoveOrder)msg.GetValue();
-			this.UpdateAWStateValue(_AWS_CurrentPath, _moveOrderMsg.getPath());
 		}
 		return false;
 	}

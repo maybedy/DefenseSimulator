@@ -103,7 +103,11 @@ public class RedCompany extends BasicAgentModel {
 				this.updateCouplingState(_CS_MsgBranch, MsgBranch.FireOrder, true);
 			}else if(_orderMsg._orderType == OrderType.Move){
 				this.updateCouplingState(_CS_MsgBranch, MsgBranch.MoveOrder, true);
-			}else {
+			}else if(_orderMsg._orderType == OrderType.STOP){
+				this.updateCouplingState(_CS_MsgBranch, MsgBranch.FireOrder, true);
+				this.updateCouplingState(_CS_MsgBranch, MsgBranch.MoveOrder, true);
+			}
+			else {
 				// TODO error case
 				System.out.println("Not available order in RedCompany");
 				return false;
