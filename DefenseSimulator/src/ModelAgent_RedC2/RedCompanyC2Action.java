@@ -107,17 +107,30 @@ public class RedCompanyC2Action extends BasicActionModel {
 				if(this.GetConStateValue(_CS_Mode) == _MODE.FIRE){
 					//find objective enemy
 					CEInfo object = (CEInfo)this.GetAWStateValue(_AWS_FireObject);
+					CEInfo _currentObj;
+					
 					for(CEInfo eachInfo : objectList){
 						if(eachInfo._id.equals(object._id)){
-							this.UpdateAWStateValue(_AWS_FireObject, eachInfo);
-							if(eachInfo._HP <= 0){
-								//stop fire
-								MsgOrder _newOrder = new MsgOrder(OrderType.STOP, this._modelUUID, this._modelUUID, )
-							}else {
-								//keep fire
-							}
+							_currentObj = eachInfo;
 							break;
 						}
+					}
+
+					if(_currentObj._HP <= 0){
+						//stop fire or next fire
+						///////
+						if(objectList.size() > 1){
+							MsgOrder _newOrder = new MsgOrder(OrderType.STOP, this._modelUUID, this._modelUUID, null);
+							this.UpdateAWStateValue(_AWS_FireObject, null);	
+						}else {
+							
+							MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, );
+							this.UpdateAWStateValue(_AWS_FireObject, );	
+						}
+						
+					}else {
+						//keep fire
+						this.UpdateAWStateValue(_AWS_FireObject, eachInfo);	
 					}
 				}else if(this.GetConStateValue(_CS_Mode)== _MODE.MOVE){
 					// make new  object
@@ -131,8 +144,6 @@ public class RedCompanyC2Action extends BasicActionModel {
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
 				CEInfo _newInfo =_locUpdate._myInfo;
 				this.UpdateAWStateValue(_AWS_MyInfo, _newInfo);
-				
-				
 				
 			}else if(_reportMsg._reportType == ReportType.Assessment){
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
