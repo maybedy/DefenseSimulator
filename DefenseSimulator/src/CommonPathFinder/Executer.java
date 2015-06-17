@@ -1,8 +1,8 @@
-package CommonPathFinder;
-
-import java.io.IOException;
-
-public class Executer extends Function {
+//package CommonPathFinder;
+//
+//import java.io.IOException;
+//
+//public class Executer extends Function {
 //	/*
 //	public static void main(String[] ar) throws IOException{
 //		
@@ -68,5 +68,5 @@ public class Executer extends Function {
 //		
 //		
 //	}
-
-}
+//
+//}
