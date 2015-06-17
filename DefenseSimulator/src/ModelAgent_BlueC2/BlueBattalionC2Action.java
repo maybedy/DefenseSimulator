@@ -4,14 +4,12 @@ import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
 import CommonInfo.UUID;
-import CommonInfo.UUID.UnitType;
 import MsgC2Order.MsgFireOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
 import MsgC2Report.MsgLocNotice;
 import MsgC2Report.MsgReport;
 import MsgC2Report.ReportType;
-import MsgCommon.MsgAngleFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 

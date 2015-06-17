@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
 import CommonInfo.UUID;
-import MsgC2Report.MsgAssessment;
 import MsgC2Report.MsgLocUpdate;
 import MsgC2Report.MsgReport;
 import MsgC2Report.ReportType;
 import MsgCommon.MsgAngleDmg;
-import MsgCommon.MsgAngleFire;
 import MsgCommon.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
