@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import CommonInfo.CEInfo;
+import CommonInfo.Path;
 import CommonInfo.UUID;
 import CommonInfo.XY;
 import CommonMap.GridInfo;
@@ -24,7 +25,7 @@ public class RedBattalionC2Action extends BasicActionModel {
 	public static String _IE_ReportIn = "ReportIn";
 	
 	public static String _OE_OrderOut = "OrderOut";
-	public static String _OE_ReportOut = "ReportOut";
+	private static String _OE_ReportOut = "ReportOut";
 	
 	
 	private static String _CS_BSpreadOut = "SpreadOutStatus"; // Map<index, boolean>
@@ -72,9 +73,9 @@ public class RedBattalionC2Action extends BasicActionModel {
 		for(RedCompany eachCompany : _companyList){
 			UUID _comInfo = eachCompany._modelUUID;
 			Integer uniqID = new Integer(_comInfo.getUniqID_Batt());
-			_spreadOutStatus.put(uniqID, true);
+			_spreadOutStatus.put(uniqID, false);
 			
-			ArrayList<XY> _path = PathFinder.getPath(,,,);
+			Path _path = PathFinder.getTotalPath(eachCompany._initialCEInfo._currentGrid);
 			
 			MsgMoveOrder _moveOrder = new MsgMoveOrder(_path);
 			MsgOrder _orderMsg = new MsgOrder(OrderType.Move, this._myUUID, _comInfo, _moveOrder);
@@ -195,21 +196,23 @@ public class RedBattalionC2Action extends BasicActionModel {
 					Continue();
 					return true;
 				}else {
+					// child model will be activated automatically
 					MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, true);
 					ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 					_waitedOrder.add(_orderMsg);
 					this.UpdateAWStateValue(_AWS_WaitedOrder, _waitedOrder);
 					if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-						return true;
+						
 					}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 						Continue();
-						return true;
+						
 					}
+					return true;
 				}
 				
 			}else if(_reportMsg._reportType == ReportType.LocationChange){
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
-				
+
 				MsgLocUpdate _locUpdateMsg = (MsgLocUpdate)_reportMsg._msgValue;
 				CEInfo _companyInfo = _locUpdateMsg._myInfo;
 				this.updateCompanyInfo(_companyInfo);
@@ -223,17 +226,17 @@ public class RedBattalionC2Action extends BasicActionModel {
 					XY _currentLoc = _companyInfo._myLoc;
 					if(_currentGrid._mainLoc.equalsWithError(_currentLoc)){
 						if(_currentGrid._gridIndex == ){// TODO check spreadout place
+							//not automatically
 							MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, false);
 							ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 							_waitedOrder.add(_orderMsg);
 							this.UpdateAWStateValue(_AWS_WaitedOrder, _waitedOrder);
 
 							if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-								return true;
 							}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 								Continue();
-								return true;
 							}
+							return true;
 						}else {
 							Continue();
 							return true;
@@ -260,7 +263,8 @@ public class RedBattalionC2Action extends BasicActionModel {
 					Continue();
 					return true;
 				}else {
-					MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, null);
+					//activated automatically
+					MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, true);
 					ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 					_waitedOrder.add(_orderMsg);
 					this.UpdateAWStateValue(_AWS_WaitedOrder, _waitedOrder);

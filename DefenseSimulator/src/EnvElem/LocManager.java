@@ -5,8 +5,12 @@ import java.util.UUID;
 
 import CommonInfo.CEInfo;
 import CommonInfo.XY;
+import CommonInfo.UUID.UUIDSideType;
 import MsgC2Report.MsgLocNotice;
 import MsgC2Report.MsgLocUpdate;
+import MsgC2Report.MsgReport;
+import MsgC2Report.ReportType;
+import MsgCommon.MsgMultiLocUpdate;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicEnvElement;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -28,7 +32,7 @@ public class LocManager extends BasicEnvElement {
 	
 	protected String _ST_ListOfMsgLocNotice = "ListOfMsgLocNotice";
 	
-	public LocManager() //input parameters for constructor :: List of CEInfo  
+	public LocManager(ArrayList<CEInfo> _listOfAgents_B, ArrayList<CEInfo> _listOfAgents_R) //input parameters for constructor :: List of CEInfo  
 	{
 		/*
 		 * Set Name and ID
@@ -52,16 +56,9 @@ public class LocManager extends BasicEnvElement {
 		 */
 		AddState(_ST_Act , ActState.TICK); // this is triggering state
 		
-		ArrayList<CEInfo> ListOfAgents_B = new ArrayList<CEInfo>();
-		ArrayList<CEInfo> ListOfAgents_R = new ArrayList<CEInfo>();
-		AddState(_ST_ListOfAgents_B, ListOfAgents_B);
-		AddState(_ST_ListOfAgents_R, ListOfAgents_R);
+		AddState(_ST_ListOfAgents_B, _listOfAgents_B);
+		AddState(_ST_ListOfAgents_R, _listOfAgents_R);
 		AddState(_ST_ListOfMsgLocNotice, null);
-		
-		double tick = Constants._update_clock_time;
-		AddState(_ST_Tick , tick);
-		
-		
 		
 	}
 	
@@ -69,13 +66,12 @@ public class LocManager extends BasicEnvElement {
 	@Override
 	public boolean Delta(Message msg) {
 		if(msg.GetDstEvent() == _IE_LocUpdate) {
-			MsgLocUpdate _msg_locupdate = (MsgLocUpdate)msg.GetValue();
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			
+			MsgLocUpdate _msg_locupdate = (MsgLocUpdate)_reportMsg._msgValue;
 			CEInfo _agent_info = new CEInfo(_msg_locupdate.GetMyInfo()); //cloning
 			
-			if( _agent_info._state == DmgState.Destroyed )
-				Logger.getLogger().LogOut(this, msg.GetTime(), _agent_info._id.getFullString() + " is Destroyed " );
-			
-			UpdateAgentLocation(_agent_info);
+			this.UpdateAgentLocation(_agent_info);
 			Continue();
 			return true;
 		}
@@ -89,8 +85,8 @@ public class LocManager extends BasicEnvElement {
 			
 			return true;
 		}else if(this.GetStateValue(_ST_Act) == ActState.SEND){
-			ArrayList<MsgLocNotice> _listOfMsgLocNotice = 
-					(ArrayList<MsgLocNotice>)this.GetStateValue(_ST_ListOfMsgLocNotice);
+			ArrayList<MsgReport> _listOfMsgLocNotice = 
+					(ArrayList<MsgReport>)this.GetStateValue(_ST_ListOfMsgLocNotice);
 			
 			if(_listOfMsgLocNotice.isEmpty()){
 				//nothing to send
@@ -140,33 +136,25 @@ public class LocManager extends BasicEnvElement {
 			/*
 			 * for locNotice
 			 */
-			ArrayList<MsgLocNotice> _listOfMsgLocNotice = LocNoticeMsgFactory();
+			ArrayList<MsgReport> _listOfMsgLocNotice = LocNoticeMsgFactory();
 			this.UpdateStateValue(_ST_ListOfMsgLocNotice, _listOfMsgLocNotice);
-			
-			if( ((int)msg.GetTime()) % 100 == 0 ){
-				Logger.getLogger().LogOut(this, msg.GetTime(), "Detected Blue Entity : " + ((ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_B)).size() + "  Alive : " + getAlive( (ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_B) ) );
-				Logger.getLogger().LogOut(this, msg.GetTime(), "Detected Red  Entity : " + ((ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_R)).size() + "  Alive : " + getAlive( (ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_R) ) );
-			
-			}
 			
 			//this.updateLogInfo();
 			return true;
 		}else if(this.GetStateValue(_ST_Act) == ActState.SEND){
-			ArrayList<MsgLocNotice> _listOfMsgLocNotice = 
-					(ArrayList<MsgLocNotice>)this.GetStateValue(_ST_ListOfMsgLocNotice);
+			ArrayList<MsgReport> _listOfMsgLocNotice = 
+					(ArrayList<MsgReport>)this.GetStateValue(_ST_ListOfMsgLocNotice);
 			
 			if(_listOfMsgLocNotice.isEmpty()){
 				System.out.println("No msg left");
 			}else {
-				MsgLocNotice _sendingMsg = _listOfMsgLocNotice.remove(0);
+				MsgReport _sendingMsg = _listOfMsgLocNotice.remove(0);
+				
 	
-				if(_sendingMsg._destUUID.getSide() == UUID.UUIDSideType.Blue){ // blue
-					msg.SetValue(_OE_LocNotice_B, _sendingMsg);
-				}else if(_sendingMsg._destUUID.getSide() == UUID.UUIDSideType.Red) { // red
-					msg.SetValue(_OE_LocNotice_R, _sendingMsg);
-				}
+				msg.SetValue(_OE_LocNotice, _sendingMsg);
 				
 				this.UpdateStateValue(_ST_ListOfMsgLocNotice, _listOfMsgLocNotice);
+				
 			}
 			
 			return true;
@@ -191,10 +179,10 @@ public class LocManager extends BasicEnvElement {
 	public boolean UpdateAgentLocation(CEInfo _agent_info){
 		ArrayList<CEInfo> _listOfAgents ;
 		String _list;
-		if(_agent_info._id._side == UUID.UUIDSideType.Blue){
+		if(_agent_info._id._side == UUIDSideType.Blue){
 			_listOfAgents = (ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_B);
 			_list = _ST_ListOfAgents_B;
-		}else if(_agent_info._id._side == UUID.UUIDSideType.Red){
+		}else if(_agent_info._id._side == UUIDSideType.Red){
 			_listOfAgents = (ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_R);
 			_list = _ST_ListOfAgents_R;
 		}else {
@@ -252,40 +240,45 @@ public class LocManager extends BasicEnvElement {
 		return _nearByAgents;
 	}
 	
-	public ArrayList<MsgLocNotice> LocNoticeMsgFactory(){
-		ArrayList<MsgLocNotice> _listOfNoticeMsg = 
-				new ArrayList<MsgLocNotice>();
+	public ArrayList<MsgReport> LocNoticeMsgFactory(){
+		ArrayList<MsgReport> _listOfNoticeMsg = 
+				new ArrayList<MsgReport>();
 		ArrayList<CEInfo> _listOfAgents_B = (ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_B);
 		ArrayList<CEInfo> _listOfAgents_R = (ArrayList<CEInfo>)this.GetStateValue(_ST_ListOfAgents_R);
 		
 		for(CEInfo _agent_info_b : _listOfAgents_B){
 			ArrayList<CEInfo> _listToSend;
+			MsgReport _reportMsg;
 			MsgLocNotice _sendingMsg;
-			if(_agent_info_b._state == DmgState.Destroyed) continue;
-			if(_agent_info_b._FireType == CETypeParam.FireType.Angle){
+			if(_agent_info_b._HP <= 0) continue;
+			if(!_agent_info_b._detectable){
 				continue;
 			}
 			
-			_sendingMsg = new MsgLocNotice(new UUID(_agent_info_b._id));
+			_sendingMsg = new MsgLocNotice();
 			_listToSend = GetNearByAgents(_agent_info_b, _listOfAgents_R);
 			_sendingMsg.SetNearByList(_listToSend);
-			
-			_listOfNoticeMsg.add(_sendingMsg);
+			_reportMsg = new MsgReport(ReportType.EnemyInfo, null, _agent_info_b._id, _sendingMsg);
+
+			_listOfNoticeMsg.add(_reportMsg);
 		}
 		
 		for(CEInfo _agent_info_r : _listOfAgents_R){
 			ArrayList<CEInfo> _listToSend;
 			MsgLocNotice _sendingMsg;
-			if(_agent_info_r._state == DmgState.Destroyed) continue;
-			if(_agent_info_r._FireType == CETypeParam.FireType.Angle){
+			MsgReport _reportMsg;
+			
+			if(_agent_info_r._HP <= 0) continue;
+			if(!_agent_info_r._detectable){
 				continue;
 			}
 			
-			_sendingMsg = new MsgLocNotice(new UUID(_agent_info_r._id));
+			_sendingMsg = new MsgLocNotice();
 			_listToSend = GetNearByAgents(_agent_info_r, _listOfAgents_B);
 			_sendingMsg.SetNearByList(_listToSend);
-			
-			_listOfNoticeMsg.add(_sendingMsg);
+			_reportMsg = new MsgReport(ReportType.EnemyInfo, null, _agent_info_r._id, _sendingMsg);
+
+			_listOfNoticeMsg.add(_reportMsg);
 		}
 		
 		return _listOfNoticeMsg;
@@ -315,7 +308,7 @@ public class LocManager extends BasicEnvElement {
 	 * For Visualizer movement,
 	 * call updateLogInfo() for every tick.
 	 */
-	
+	/*
 	public void updateLogInfo()
 	{
 		String type = "A";
@@ -359,10 +352,12 @@ public class LocManager extends BasicEnvElement {
 		
 	}
 	
+	*/
+	
 	public int getAlive( ArrayList<CEInfo> _list ){ // sjkwon
 		int count = 0;
 		for(CEInfo _agent_info : _list){
-			if( _agent_info._state != DmgState.Destroyed) count++;
+			if( _agent_info._HP > 0) count++;
 		}
 		return count;
 	}

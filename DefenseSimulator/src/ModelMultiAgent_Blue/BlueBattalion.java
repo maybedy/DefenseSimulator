@@ -10,6 +10,7 @@ import ModelAgent_BlueC2.Sensor;
 import ModelAgent_BlueC2.Shooter;
 import MsgC2Order.MsgOrder;
 import MsgC2Report.MsgLocNotice;
+import MsgC2Report.MsgReport;
 import MsgCommon.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
@@ -112,11 +113,11 @@ public class BlueBattalion extends BasicMultiAgentModel {
 			return true;
 			
 		}else if(msg.GetDstEvent() == _IE_LocNoticeIn){
-			MsgLocNotice _locNoticeMsg = (MsgLocNotice)msg.GetValue();
-			
-			this.updateCouplingState(_CS_MsgBranch, _locNoticeMsg._destUUID.getUniqID_Batt(), true);
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			this.updateCouplingState(_CS_MsgBranch, _reportMsg._destUUID.getUniqID_Batt(), true);
 			return true;
 		}else {
+			
 			this.updateCouplingState(_CS_MsgBranch, -1, true);
 			
 			return true;

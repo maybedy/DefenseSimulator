@@ -29,12 +29,14 @@ public class RedCompany extends BasicAgentModel {
 	}
 	
 	public UUID _modelUUID;
+	public CEInfo _initialCEInfo;
 
 	public RedCompany(CEInfo _myInfo) {
 		String _name = "RedCompany";
 		SetModelName(_name);
 		
 		this._modelUUID = _myInfo._id;
+		this._initialCEInfo = _myInfo;
 		
 		RedCompanyC2Action rCC2 = new RedCompanyC2Action(_myInfo);
 		

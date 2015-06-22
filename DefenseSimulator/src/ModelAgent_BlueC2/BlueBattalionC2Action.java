@@ -138,10 +138,17 @@ public class BlueBattalionC2Action extends BasicActionModel {
 				this.UpdateAWStateValue(_AWS_WaitedOrder, _storedOrder);
 				
 			}else if(_reportMsg._reportType == ReportType.LocationChange){
+				//don't have to consider
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
+				
+				Continue();
 			}else if(_reportMsg._reportType == ReportType.Assessment){
+				//don't have to consider
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.Assessment);
+				
+				Continue();
 			}
+			return true;
 			
 		}
 		return false;
@@ -176,9 +183,10 @@ public class BlueBattalionC2Action extends BasicActionModel {
 		
 		int _shootCnt = (int)this.GetConStateValue(_CS_ShootCount);
 		int _numShooter = (int)this.GetConStateValue(_CS_NumShooter);
+		ArrayList<CEInfo> _companyList = (ArrayList<CEInfo>)this.GetConStateValue(_CS_CompanyList);
 		
 		for(MsgFireOrder eachMsg : _fireOrderList){
-			ArrayList<CEInfo> _companyList = (ArrayList<CEInfo>)this.GetConStateValue(_CS_CompanyList);
+			
 			CEInfo _info = _companyList.get(_shootCnt%_numShooter);
 			UUID _shooterUUID = _info._id;
 			_shootCnt++;
