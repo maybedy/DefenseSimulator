@@ -7,6 +7,7 @@ import CommonInfo.UUID;
 import ModelAgent_RedC2.RedBattalionC2;
 import ModelAgent_RedC2.RedCompany;
 import MsgC2Report.MsgLocNotice;
+import MsgC2Report.MsgReport;
 import MsgCommon.MsgAngleDmg;
 import MsgCommon.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiAgentModel;
@@ -84,13 +85,16 @@ public class RedMA extends BasicMultiAgentModel {
 			return true;
 		}else if(msg.GetDstEvent() == this._IE_DirectFireIn){
 			MsgDirectFire _dirFireMsg = (MsgDirectFire)msg.GetValue();
+			CEInfo _targetInfo = _dirFireMsg._target;
+			UUID _targetID= _targetInfo._id;
 			
-			this.updateCouplingState(_CS_MsgBranch, _dirFireMsg._destUUID.getUniqID_MAM(), true);
+			this.updateCouplingState(_CS_MsgBranch, _targetID.getUniqID_MAM(), true);
 			return true;
 		}else if(msg.GetDstEvent() == this._IE_LocNoticeIn){
-			MsgLocNotice _locNotMsg = (MsgLocNotice)msg.GetValue();
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			MsgLocNotice _locNotMsg = (MsgLocNotice)_reportMsg._msgValue;
 			
-			this.updateCouplingState(_CS_MsgBranch, _locNotMsg._destUUID.getUniqID_MAM(), true);
+			this.updateCouplingState(_CS_MsgBranch, _reportMsg._destUUID.getUniqID_MAM(), true);
 			return true;
 		}else {
 			this.updateCouplingState(_CS_MsgBranch, -1, true);

@@ -1,5 +1,8 @@
 package EnvMultiEnv;
 
+import java.util.ArrayList;
+
+import CommonInfo.CEInfo;
 import EnvElem.DmgManager;
 import EnvElem.LocManager;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicEnvModel;
@@ -15,7 +18,7 @@ public class WarEnvironment extends BasicEnvModel {
 
 	private String _CS_Normal = "normal";
 
-	public WarEnvironment() {
+	public WarEnvironment(ArrayList<CEInfo> _listOfAgents_B, ArrayList<CEInfo> _listOfAgents_R) {
 		String name = "WarEnvModel";
 		SetModelName(name);
 
@@ -27,16 +30,18 @@ public class WarEnvironment extends BasicEnvModel {
 		
 		AddCouplingState(_CS_Normal, true);
 		
-		LocManager locMgr = new LocManager();
+		LocManager locMgr = new LocManager(_listOfAgents_B, _listOfAgents_R);
 		DmgManager dmgMgr = new DmgManager();
 		
-		AddCoupling(_CS_Normal, true, this, this._IE_AngleFireIn, dmgMgr, dmgMgr._IE_AngleFireIn);
-		AddCoupling(_CS_Normal, true, this, this._IE_LocUpdateIn, locMgr, locMgr._IE_LocUpdateIn);
+		AddCoupling(_CS_Normal, true, this, this._IE_AngleFireIn, dmgMgr, dmgMgr._IE_AngFire);
+		AddCoupling(_CS_Normal, true, this, this._IE_LocUpdateIn, locMgr, locMgr._IE_LocUpdate);
 		
-		AddCoupling(_CS_Normal, true, dmgMgr, dmgMgr._OE_AngleDmgOut, this, this._OE_AngleDmgOut);
-		AddCoupling(_CS_Normal, true, locMgr, locMgr._OE_LocNoticeOut, this, this._OE_LocNoticeOut);
+		AddCoupling(_CS_Normal, true, dmgMgr, dmgMgr._OE_AngDmg, this, this._OE_AngleDmgOut);
+		AddCoupling(_CS_Normal, true, locMgr, locMgr._OE_LocNotice, this, this._OE_LocNoticeOut);
 		
 		//TODO add internal changes
+		AddCoupling(_CS_Normal, true, locMgr, locMgr._OE_LocUpdate, dmgMgr, dmgMgr._IE_LocUpdate);
+		
 		
 	}
 

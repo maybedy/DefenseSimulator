@@ -17,10 +17,10 @@ import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class DmgManager extends BasicEnvElement {
 
-	protected String _IE_AngFire = "AngleFireIn";
-	protected String _IE_LocUpdate = "LocUpdate";
+	public String _IE_AngFire = "AngleFireIn";
+	public String _IE_LocUpdate = "LocUpdate";
 	
-	protected String _OE_AngDmg = "AngleDmgOut";
+	public String _OE_AngDmg = "AngleDmgOut";
 	
 	protected String _ST_Act = "ActState";
 	

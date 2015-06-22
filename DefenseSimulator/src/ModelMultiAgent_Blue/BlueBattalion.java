@@ -107,8 +107,10 @@ public class BlueBattalion extends BasicMultiAgentModel {
 		}
 		else if(msg.GetDstEvent() == _IE_DirectFireIn){
 			MsgDirectFire _directFireMsg = (MsgDirectFire)msg.GetValue();
+			CEInfo _targetInfo = _directFireMsg._target;
+			UUID _targetID= _targetInfo._id;
 			
-			this.updateCouplingState(_CS_MsgBranch, _directFireMsg._destUUID.getUniqID_Batt(), true);
+			this.updateCouplingState(_CS_MsgBranch, _targetID.getUniqID_Batt(), true);
 			
 			return true;
 			

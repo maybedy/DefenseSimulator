@@ -1,5 +1,8 @@
 package EnvMultiEnv;
 
+import java.util.ArrayList;
+
+import CommonInfo.CEInfo;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicMultiEnvModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -13,7 +16,7 @@ public class MultiEnvModel extends BasicMultiEnvModel {
 	
 	private String _CS_Normal = "normal";
 
-	public MultiEnvModel() {
+	public MultiEnvModel(ArrayList<CEInfo> _listOfAgents_B, ArrayList<CEInfo> _listOfAgents_R) {
 		String name = "MultiEnvModel";
 		SetModelName(name);
 		
@@ -25,7 +28,7 @@ public class MultiEnvModel extends BasicMultiEnvModel {
 		
 		AddCouplingState(_CS_Normal, true);
 		
-		WarEnvironment warEnv = new WarEnvironment();
+		WarEnvironment warEnv = new WarEnvironment(_listOfAgents_B, _listOfAgents_R);
 		
 		AddCoupling(_CS_Normal, true, this, this._IE_AngleFireIn, warEnv, warEnv._IE_AngleFireIn);
 		AddCoupling(_CS_Normal, true, this, this._IE_LocUpdateIn, warEnv, warEnv._IE_LocUpdateIn);
