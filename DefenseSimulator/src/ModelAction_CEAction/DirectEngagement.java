@@ -4,6 +4,7 @@ import CommonInfo.CEInfo;
 import CommonInfo.DmgState;
 import CommonInfo.UUID;
 import CommonType.WTType;
+import CommonType.WTTypeDirectParam;
 import MsgC2Order.MsgDirEngOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
@@ -59,13 +60,11 @@ public class DirectEngagement extends BasicActionModel {
 		}else if(this.GetActStateValue(_AS_ACTION) == _AS.Fire){
 			// TODO msg generating
 			CEInfo _enemyInfo = (CEInfo)this.GetAWStateValue(_AWS_DETECTED_ENEMY);
+			CEInfo _myInfo = (CEInfo)this.GetConStateValue(_CS_MYINFO);
+			WTTypeDirectParam _myParam = (WTTypeDirectParam)_myInfo._weaponParam;
 			MsgDirectFire _dirFireMsg = null;
-			if(this._id._side == UUID.UUIDSideType.Blue){
-				_dirFireMsg = new MsgDirectFire(_enemyInfo._id,this._id, WTType.B_DirectFire);
-			}else if(this._id._side == UUID.UUIDSideType.Red){
-				_dirFireMsg = new MsgDirectFire(_enemyInfo._id,this._id, WTType.R_DirectFire);
-			}
 			
+			_dirFireMsg = new MsgDirectFire(_enemyInfo, _myParam);
 			msg.SetValue(_OE_DirectFireOut, _dirFireMsg);
 			return true;
 		}

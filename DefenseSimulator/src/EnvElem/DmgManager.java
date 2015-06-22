@@ -11,6 +11,7 @@ import CommonInfo.CEInfo;
 import CommonInfo.XY;
 import MsgCommon.MsgAngleDmg;
 import MsgCommon.MsgAngleFire;
+import MsgCommon.MsgMultiLocUpdate;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicEnvElement;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -23,7 +24,6 @@ public class DmgManager extends BasicEnvElement {
 	
 	protected String _ST_Act = "ActState";
 	
-	protected String _ST_TA = "Ta";
 	
 	protected String _ST_ListOfAgents = "ListOfAgents";
 	//protected String _ST_ListOfDmg = "ListOfDmgAgents";
@@ -74,18 +74,12 @@ public class DmgManager extends BasicEnvElement {
 		AddState(_ST_DmgList, null); // only for sending moment
 		
 		AddState(_ST_SimTime, (double)0);
-
-		double ta = Constants._update_clock_time;
-		AddState(_ST_TA , ta);
 		
+
 		AddState(_ST_ListOfAgents, null); // TODO modify if there is input list
 		
-		
-		
 		AddState(_FLAG_IsContinuable, true);
-		
 	}
-	
 	
 	@Override
 	public boolean Delta(Message msg) {
@@ -252,12 +246,9 @@ public class DmgManager extends BasicEnvElement {
 			
 			//System.out.println("Remained msg : " + _listOfDmg.size());
 			if( _listOfDmg.size() == 0 ) return false;
+			
 			MsgAngleDmg _msgToSend = this.RemoveDmgMsg();
-			if(_msgToSend._destUUID.getSide() == UUID.UUIDSideType.Blue){// blue
-				msg.SetValue(_OE_AngDmg_B, _msgToSend);
-			}else if(_msgToSend._destUUID.getSide() == UUID.UUIDSideType.Red) {// red
-				msg.SetValue(_OE_AngDmg_R, _msgToSend);
-			}
+			msg.SetValue(_OE_AngDmg, _msgToSend);
 			
 			if(_listOfDmg.isEmpty()){
 			//	System.out.println("All sended and in delta function -it will search new fire msg(to send or wait) or go to wait");
@@ -289,12 +280,12 @@ public class DmgManager extends BasicEnvElement {
 		ArrayList<MsgAngleDmg> _listOfDmg = new ArrayList<MsgAngleDmg>();
 		//TODO find the list of agent in fire range
 		
-		double _fireRange = _msgAngleFire._casualty_radius;
+		double _fireRange = _msgAngleFire._angleFireParam._casualty_radius;
 		XY _impactLoc = _msgAngleFire._impactLoc;
 
 		for(CEInfo _eachAgent : _listOfAgents){
 			
-			if( _eachAgent._state == DmgState.Destroyed ) continue;
+			if( _eachAgent._HP <= 0) continue;
 			
 			double _dist = _eachAgent._myLoc.distance(_impactLoc);
 			
@@ -380,7 +371,7 @@ public class DmgManager extends BasicEnvElement {
 		TreeMap<MsgAngleFire, Double> _msgList = this.GetMsgList();
 		
 		MsgAngleFire _msg = new MsgAngleFire(_angleFireMsg);
-		Double _value = _angleFireMsg._time_for_flight;
+		Double _value = _angleFireMsg._angleFireParam._time_for_flight;
 		
 		_unsortedMsgList.put(_msg, _value);
 		_msgList.put(_msg, _value);

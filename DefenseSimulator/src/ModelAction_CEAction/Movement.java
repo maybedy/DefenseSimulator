@@ -8,7 +8,6 @@ import CommonInfo.UUID;
 import CommonInfo.XY;
 import CommonMap.GridInfo;
 import CommonMap.GridInfoNetwork;
-import EnvElem.Grid;
 import MsgC2Order.MsgMoveOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;

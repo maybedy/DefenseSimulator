@@ -3,10 +3,13 @@ package ModelAction_CEAction;
 import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
+import CommonInfo.XY;
+import CommonType.WTTypeAngleParam;
 import MsgC2Order.MsgFireOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Report.MsgLocUpdate;
 import MsgC2Report.MsgReport;
+import MsgCommon.MsgAngleFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -65,7 +68,14 @@ public class AngleEngagement extends BasicActionModel {
 				MsgFireOrder _orderFireMsg = orderList.remove(0);
 				
 				this.UpdateAWStateValue(_AWS_Q_AngleOrder, orderList);
-				msg.SetValue(_OE_AngleFireOut, _orderFireMsg);
+				CEInfo _enemy = _orderFireMsg._enemyInfo;
+				XY _impactLoc = _enemy._myLoc;
+ 				
+				CEInfo _myInfo = (CEInfo)this.GetConStateValue(_CS_MYINFO);
+				WTTypeAngleParam _myAngleParam = (WTTypeAngleParam)_myInfo._weaponParam;
+				//TODO Make new MsgAngleFire
+				MsgAngleFire _newAngleFire = new MsgAngleFire(_impactLoc, _myAngleParam);
+				msg.SetValue(_OE_AngleFireOut, _newAngleFire);
 			}
 			
 			

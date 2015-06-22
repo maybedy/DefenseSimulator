@@ -3,7 +3,6 @@ package CommonInfo;
 import java.util.ArrayList;
 
 import CommonMap.GridInfo;
-import EnvElem.Grid;
 
 public class Path {
 	
