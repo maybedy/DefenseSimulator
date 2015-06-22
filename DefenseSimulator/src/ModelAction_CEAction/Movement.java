@@ -3,10 +3,12 @@ package ModelAction_CEAction;
 import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
+import CommonInfo.Path;
 import CommonInfo.UUID;
 import CommonInfo.XY;
 import CommonMap.GridInfo;
 import CommonMap.GridInfoNetwork;
+import EnvElem.Grid;
 import MsgC2Order.MsgMoveOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
@@ -22,7 +24,7 @@ public class Movement extends BasicActionModel {
 	public static String _OE_LocUpdateOut = "LocUpdateOut";
 	
 	private static String _CS_CurrentLoc = "CurrentLocation"; // XY
-	private static String _CS_Movable = "Movable"; // boolean
+	//private static String _CS_Movable = "Movable"; // boolean
 	private static String _CS_MyInfo = "MyInfo";  // CEInfo
 	private static String _CS_CurrentDirection = "CurrentDirection"; // double
 	private static String _CS_CurrentObjective = "CurrentObjective"; // XY
@@ -56,7 +58,7 @@ public class Movement extends BasicActionModel {
 		
 		AddConState(_CS_MyInfo, _myInfo);
 		AddConState(_CS_CurrentLoc, _myInfo._myLoc);
-		AddConState(_CS_Movable, _myInfo._movable);
+		//AddConState(_CS_Movable, _myInfo._movable);
 		
 		AddConState(_CS_CurrentDirection, null);
 		AddConState(_CS_CurrentObjective, null);
@@ -87,34 +89,27 @@ public class Movement extends BasicActionModel {
 			//  nothing to do
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.Move){
-			XY _currCheckpoint = (XY)this.GetConStateValue(_CS_CurrentObjective);
+			GridInfo _currCheckpoint = (GridInfo)this.GetConStateValue(_CS_CurrentObjective);
 			double _currDirection = (double)this.GetConStateValue(_CS_CurrentDirection);
 			XY _currLoc = (XY)this.GetConStateValue(_CS_CurrentLoc);
 			double _currSpeed = (double)this.GetConStateValue(_CS_CurrentSpeed);
 			CEInfo _currInfo = (CEInfo)this.GetConStateValue(_CS_MyInfo);
 			
-			
-
-			XY _newLoc = this.UpdateMyLoc(_currLoc, _currDirection, _currSpeed, _currCheckpoint);
+			XY _newLoc = this.UpdateMyLoc(_currLoc, _currDirection, _currSpeed, _currCheckpoint._mainLoc);
 			this.UpdateConStateValue(_CS_CurrentLoc, _newLoc);
 			
 			CEInfo _newInfo = new CEInfo(_currInfo);
 			_newInfo._myLoc = _newLoc;
 			
-			if(_currCheckpoint.distance(_newLoc) <= GridInfo._r){
+			if(_currCheckpoint.isInThisGrid(_newLoc)){
 				//TODO make calculating speed in the Grid
-				GridInfo _newGridInfo = GridInfoNetwork.findMyGrid(_newLoc);
-				_newInfo._currentGrid = _newGridInfo;
+				this.updateSpeed(_currCheckpoint);
+				_newInfo._currentGrid = _currCheckpoint;
 				
-				_currSpeed = _newGridInfo.getSpeedInThisGrid(this._PARAM_MaxSpeed);
-				
-				this.UpdateConStateValue(_CS_CurrentSpeed, _currSpeed);
 			}
 			
-			
-			
-			if(this.isArrive(_newLoc, _currCheckpoint)){
-				ArrayList<XY> _pathList = (ArrayList<XY>)this.GetAWStateValue(_AWS_CurrentPath);
+			if(this.isArrive(_newLoc, _currCheckpoint._mainLoc)){
+				Path _pathList = (Path)this.GetAWStateValue(_AWS_CurrentPath);
 				
 				if(_pathList.isEmpty()){
 					this.UpdateConStateValue(_CS_CurrentDirection, null);
@@ -122,13 +117,10 @@ public class Movement extends BasicActionModel {
 					this.UpdateAWStateValue(_AWS_CurrentPath, null);
 					
 				}else {
-					_currCheckpoint = _pathList.remove(0);
-					_currDirection = _currLoc.calBearing(_currCheckpoint);
-					
+					_currCheckpoint = _pathList.removeCurrentObject();
+					this.updateDirection(_currCheckpoint);
 					this.UpdateConStateValue(_CS_CurrentObjective, _currCheckpoint);
-					this.UpdateConStateValue(_CS_CurrentDirection, _currDirection);
 					this.UpdateAWStateValue(_AWS_CurrentPath, _pathList);
-					
 				}
 				
 			}
@@ -149,8 +141,8 @@ public class Movement extends BasicActionModel {
 			this.UpdateActStateValue(_AS_Action, _AS.Move);
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.Move){
-			ArrayList<XY> _currentPath = (ArrayList<XY>)this.GetAWStateValue(_AWS_CurrentPath);
-			if(_currentPath == null){
+			Path _currentPath = (Path)this.GetAWStateValue(_AWS_CurrentPath);
+			if(_currentPath == null || _currentPath.isEmpty()){
 				this.UpdateActStateValue(_AS_Action, _AS.Stop);	
 			}else {
 				this.UpdateActStateValue(_AS_Action, _AS.Move);
@@ -169,21 +161,57 @@ public class Movement extends BasicActionModel {
 			this.UpdateConStateValue(_CS_MyInfo, _myInfoMsg._myInfo);
 			
 			Continue();
+			
+			return true;
 		}else if(msg.GetDstEvent() == _IE_OrderIn){
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
 			if(_orderMsg._orderType == OrderType.STOP){
 				
 				this.UpdateAWStateValue(_AWS_CurrentPath, null);
 				
+				return true;
+				
 			}else if(_orderMsg._orderType == OrderType.Move){
 				
 				MsgMoveOrder _moveOrderMsg = (MsgMoveOrder)_orderMsg._orderMsg;
-				this.UpdateAWStateValue(_AWS_CurrentPath, _moveOrderMsg.getPath());
+				Path _pathList = _moveOrderMsg.getPath();
+				GridInfo _currCheckpoint = _pathList.removeCurrentObject();
 				
+				this.UpdateAWStateValue(_AWS_CurrentPath, _pathList);
+				this.updateSpeed(_currCheckpoint);
+				this.updateDirection(_currCheckpoint);
+				
+				return true;
 			}
 			
 		}
 		return false;
+	}
+//	
+//	private boolean isInNewGrid(){
+//		XY _currentXY = (XY)this.GetConStateValue(_CS_CurrentLoc);
+//		Path _currentPath = (Path) this.GetAWStateValue(_AWS_CurrentPath);
+//		GridInfo _newObjGrid = _currentPath.removeCurrentObject();
+//		
+//		if(_newObjGrid.isInThisGrid(_currentXY)){
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+	private void updateSpeed(GridInfo _currentObjGrid){
+		double _currSpeed = _currentObjGrid.getSpeedInThisGrid(this._PARAM_MaxSpeed);
+		this.UpdateConStateValue(_CS_CurrentSpeed, _currSpeed);
+	}
+	
+	private void updateDirection(GridInfo _newObjGrid){
+		XY _currLoc = (XY)this.GetConStateValue(_CS_CurrentLoc);
+		double _currDirection = _currLoc.calBearing(_newObjGrid._mainLoc);
+		
+		this.UpdateConStateValue(_CS_CurrentDirection, _currDirection);
+		this.UpdateConStateValue(_CS_CurrentObjective, _newObjGrid);
+		
+		
 	}
 
 	@Override

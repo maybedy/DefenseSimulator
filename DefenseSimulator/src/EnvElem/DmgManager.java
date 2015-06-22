@@ -7,27 +7,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import Common.CEInfo;
-import Common.Constants;
-import Common.DmgState;
-import Common.UUID;
-import Common.XY;
-import Env.ValueComparator;
-import Env.DmgManagerElement.ActState;
-import Message.MsgAngleDmg;
-import Message.MsgAngleFire;
-import Message.MsgMultiLocUpdate;
+import CommonInfo.CEInfo;
+import CommonInfo.XY;
+import MsgCommon.MsgAngleDmg;
+import MsgCommon.MsgAngleFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicEnvElement;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class DmgManager extends BasicEnvElement {
 
-	protected String _IE_AngFire_B = "AngleFireIn_B";
-	protected String _IE_AngFire_R = "AngleFireIn_R";
+	protected String _IE_AngFire = "AngleFireIn";
 	protected String _IE_LocUpdate = "LocUpdate";
 	
-	protected String _OE_AngDmg_B = "AngleDmg_B";
-	protected String _OE_AngDmg_R = "AngleDmg_R";
+	protected String _OE_AngDmg = "AngleDmgOut";
 	
 	protected String _ST_Act = "ActState";
 	
@@ -47,7 +39,7 @@ public class DmgManager extends BasicEnvElement {
 		WAIT, SEND
 	};
 	
-	public DmgManagerElement() //input parameters for constructor :: List of Agents, XYs,  
+	public DmgManager() //input parameters for constructor :: List of Agents, XYs,  
 	{
 		/*
 		 * Set Name and ID
@@ -58,16 +50,14 @@ public class DmgManager extends BasicEnvElement {
 		/*
 		 * Add Input Port
 		 */
-		AddInputEvent(_IE_AngFire_B);
-		AddInputEvent(_IE_AngFire_R);
+		AddInputEvent(_IE_AngFire);
 		
 		AddInputEvent(_IE_LocUpdate);
 		
 		/*
 		 * Add Output Port
 		 */
-		AddOutputEvent(_OE_AngDmg_B);
-		AddOutputEvent(_OE_AngDmg_R);
+		AddOutputEvent(_OE_AngDmg);
 				
 		/*
 		 * Add State
@@ -85,7 +75,7 @@ public class DmgManager extends BasicEnvElement {
 		
 		AddState(_ST_SimTime, (double)0);
 
-		double ta = Constants._update_clock_time;;
+		double ta = Constants._update_clock_time;
 		AddState(_ST_TA , ta);
 		
 		AddState(_ST_ListOfAgents, null); // TODO modify if there is input list
@@ -99,7 +89,7 @@ public class DmgManager extends BasicEnvElement {
 	
 	@Override
 	public boolean Delta(Message msg) {
-		if(msg.GetDstEvent() == _IE_AngFire_B || msg.GetDstEvent() == _IE_AngFire_R) {
+		if(msg.GetDstEvent() == _IE_AngFire) {
 			double _currentTime = msg.GetTime();
 			double _lastTime = (double)this.GetStateValue(_ST_SimTime);
 			
@@ -241,7 +231,7 @@ public class DmgManager extends BasicEnvElement {
 			
 			return true;
 		}
-//		else if(msg.GetDstEvent() == _IE_AngFire_R){
+//		else if(msg.GetDstEvent() == ){
 //			// almost same as upper 'if' block -> merge it??
 //			return true;
 //		}

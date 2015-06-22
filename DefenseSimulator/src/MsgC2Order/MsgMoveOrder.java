@@ -1,23 +1,21 @@
 package MsgC2Order;
 
-import java.util.ArrayList;
-
-import CommonInfo.XY;
+import CommonInfo.Path;
 
 public class MsgMoveOrder {
 	
-	private ArrayList<XY> _pathForObj;
+	private Path _pathForObj;
 
-	public MsgMoveOrder(ArrayList<XY> _path) {
+	public MsgMoveOrder(Path _path) {
 		this._pathForObj = _path;
 	}
 	
-	public void setPath(ArrayList<XY> _path){
+	public void setPath(Path _path){
 		this._pathForObj = _path;
 	}
 	
-	public ArrayList<XY> getPath() {
+	public Path getPath() {
 		return _pathForObj;
 	}
-
+	
 }
