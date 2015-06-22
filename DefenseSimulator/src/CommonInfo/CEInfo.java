@@ -11,12 +11,11 @@ public class CEInfo {
 	public UUID _id;
 	
 	public XY _myLoc;
-	public double _HP;
-	public DmgState _state;
-	
 	public GridInfo _currentGrid;
-
+	
+	
 	public CEType _unitType;
+	public double _HP;
 	
 	public boolean _movable;
 	public double _maxSpeed;

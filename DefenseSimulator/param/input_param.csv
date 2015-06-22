@@ -1,0 +1,55 @@
+General Information,Simulation Region,Start_Lat,38.0515
+General Information,Simulation Region,Start_Lon,127.3376
+General Information,Simulation Region,End_Lat,38.1144
+General Information,Simulation Region,End_Lon,127.3683
+General Information,Simulation Params,Simulation Endtime,30000
+General Information,Simulation Params,OSM file,map
+General Information,Simulation Params,AgentLocFile,agentLoc.csv
+CEInfo,BlueBattalionC2,HP,10000
+CEInfo,BlueBattalionC2,Movable,FALSE
+CEInfo,BlueBattalionC2,maxSpeed,0
+CEInfo,BlueBattalionC2,detectable,FALSE
+CEInfo,BlueBattalionC2,detectRange,0
+CEInfo,BlueBattalionC2,engageable,FALSE
+CEInfo,BlueBattalionC2,weaponType,NONE
+CEInfo,BlueCompanyC2,HP,100
+CEInfo,BlueCompanyC2,Movable,FALSE
+CEInfo,BlueCompanyC2,maxSpeed,0
+CEInfo,BlueCompanyC2,detectable,TRUE
+CEInfo,BlueCompanyC2,detectRange,100
+CEInfo,BlueCompanyC2,engageable,TRUE
+CEInfo,BlueCompanyC2,weaponType,BlueDirect
+CEInfo,BlueSensor,HP,500
+CEInfo,BlueSensor,Movable,FALSE
+CEInfo,BlueSensor,maxSpeed,0
+CEInfo,BlueSensor,detectable,TRUE
+CEInfo,BlueSensor,detectRange,500
+CEInfo,BlueSensor,engageable,FALSE
+CEInfo,BlueSensor,weaponType,NONE
+CEInfo,BlueShooter,HP,500
+CEInfo,BlueShooter,Movable,FALSE
+CEInfo,BlueShooter,maxSpeed,0
+CEInfo,BlueShooter,detectable,FALSE
+CEInfo,BlueShooter,detectRange,0
+CEInfo,BlueShooter,engageable,TRUE
+CEInfo,BlueShooter,weaponType,BlueAngle
+CEInfo,RedBattalionC2,HP,10000
+CEInfo,RedBattalionC2,Movable,FALSE
+CEInfo,RedBattalionC2,maxSpeed,0
+CEInfo,RedBattalionC2,detectable,FALSE
+CEInfo,RedBattalionC2,detectRange,0
+CEInfo,RedBattalionC2,engageable,FALSE
+CEInfo,RedBattalionC2,weaponType,NONE
+CEInfo,RedCompanyC2,HP,100
+CEInfo,RedCompanyC2,Movable,TRUE
+CEInfo,RedCompanyC2,maxSpeed,10
+CEInfo,RedCompanyC2,detectable,TRUE
+CEInfo,RedCompanyC2,detectRange,10
+CEInfo,RedCompanyC2,engageable,TRUE
+CEInfo,RedCompanyC2,weaponType,RedDirect
+WTTypeParam,BlueAngle,vertical_error,0
+WTTypeParam,BlueAngle,horizontal_error,0
+WTTypeParam,BlueAngle,casualty_radius,100
+WTTypeParam,BlueAngle,time_for_flight,5
+WTTypeParam,BlueDirect,,
+WTTypeParam,RedDirect,,
