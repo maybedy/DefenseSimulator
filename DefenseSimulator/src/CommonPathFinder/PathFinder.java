@@ -3,6 +3,9 @@ package CommonPathFinder;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import CommonInfo.Path;
+import CommonMap.GridInfo;
+
 public class PathFinder {
 	
 	private static Variables key; 
@@ -20,6 +23,21 @@ public class PathFinder {
 	
 	public static void calculatePath() throws IOException{
 		Function.OffLineMDP(key, 1, 0, 0, 0, 0, 0);
+	
+	}
+	
+	public static Path getTotalPath(GridInfo _grid){
+		
+		// TODO calculate path 
+		
+		ArrayList<GridInfo> _pathList= null;
+		
+		
+		
+		Path _newPath = new Path(_pathList);
+		
+		
+		return _newPath;
 	}
 	
 	public static int getPath(int index){

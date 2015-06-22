@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import CommonInfo.CEInfo;
 import CommonInfo.UUID;
 import MsgC2Order.MsgDirEngOrder;
-import MsgC2Order.MsgFireOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
 import MsgC2Report.MsgLocNotice;
@@ -60,7 +59,7 @@ public class BlueCompanyC2Action extends BasicActionModel {
 		AddOutputEvent(_OE_ReportOut);
 		
 		AddActState(_AS_Action, _AS.WAIT);
-		
+		AddConState(_CS_Mode, _MODE.STOP);
 
 		AddConState(_CS_ShootCount, (int)0);
 		
@@ -105,7 +104,11 @@ public class BlueCompanyC2Action extends BasicActionModel {
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
 				this.UpdateActStateValue(_AS_Action, _AS.PROC);
-			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
+				Continue();
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
 				Continue();
 			}
 			return true;
@@ -114,7 +117,11 @@ public class BlueCompanyC2Action extends BasicActionModel {
 				Continue();
 			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
 				Continue();
-			}else if(this.GetAWStateValue(_AWS_RecentReport) == null){
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
+				Continue();
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == null){
 				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 				ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
 				if(_orderList.isEmpty() && _reportList.isEmpty()){
@@ -255,38 +262,4 @@ public class BlueCompanyC2Action extends BasicActionModel {
 		
 	}
 	
-//	
-//	
-//	public ArrayList<MsgFireOrder> makeFireOrders(ArrayList<CEInfo> _enemyList){
-//		ArrayList<MsgFireOrder> retList = new ArrayList<MsgFireOrder>();
-//		
-//		for(CEInfo _eachEnemy : _enemyList){
-//			if(_eachEnemy._HP <= 0){
-//				continue;
-//			}
-//			
-//			MsgFireOrder _fireOrdMsg = new MsgFireOrder(_eachEnemy);
-//			retList.add(_fireOrdMsg);
-//		}
-//		return retList;
-//	}
-//	
-//	public ArrayList<MsgOrder> arrangeOrders(ArrayList<MsgFireOrder> _fireOrderList){
-//		ArrayList<MsgOrder> _orderList = new ArrayList<MsgOrder>();
-//		
-//		int _shootCnt = (int)this.GetConStateValue(_CS_ShootCount);
-//		
-//		for(MsgFireOrder eachMsg : _fireOrderList){
-//			_shootCnt++;
-//			
-//			MsgOrder _orderMsg = new MsgOrder(OrderType.AngleEngagement, _modelUUID, _modelUUID, eachMsg);
-//			
-//			_orderList.add(_orderMsg);
-//		}
-//		
-//		this.UpdateConStateValue(_CS_ShootCount, _shootCnt);
-//		return _orderList;
-//	}
-
-
 }

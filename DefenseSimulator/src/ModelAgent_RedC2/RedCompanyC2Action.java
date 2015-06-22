@@ -1,10 +1,11 @@
 package ModelAgent_RedC2;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
+import CommonInfo.Path;
 import CommonInfo.UUID;
-import CommonInfo.XY;
 import CommonPathFinder.PathFinder;
 import MsgC2Order.MsgDirEngOrder;
 import MsgC2Order.MsgMoveOrder;
@@ -22,7 +23,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 	public static String _IE_ReportIn = "ReportIn";
 	public static String _IE_OrderIn = "OrderIn";
 	
-//	public static String _OE_ReportOut = "ReportOut";
+	public static String _OE_ReportOut = "ReportOut";
 	public static String _OE_OrderOut = "OrderOut";
 	
 	
@@ -42,6 +43,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 	
 	private static String _AWS_FireObject = "FireObject";
 	private static String _AWS_WaitedOrder = "OrderList";
+	private static String _AWS_WaitedReport = "ReportList";
 	private static String _AWS_RecentReport = "RecentReport";
 	
 	private static String _AWS_MyInfo = "MyInfo";
@@ -61,24 +63,45 @@ public class RedCompanyC2Action extends BasicActionModel {
 		AddInputEvent(_IE_OrderIn);
 		
 		AddOutputEvent(_OE_OrderOut);
-//		AddOutputEvent(_OE_ReportOut);
+		AddOutputEvent(_OE_ReportOut);
 		
 		AddActState(_AS_Action, _AS.WAIT);
+		
 		AddConState(_CS_SpreadOut, false);
 		AddConState(_CS_Mode, _MODE.MOVE);
 		
 		AddConState(_CS_ShootCount, (int)0);
 	
 		AddAwState(_AWS_WaitedOrder, new ArrayList<MsgOrder>());
+		AddAwState(_AWS_WaitedReport, new ArrayList<MsgReport>());
 		AddAwState(_AWS_RecentReport, null);
 		AddAwState(_AWS_FireObject, null);
 	}
 
 	@Override
-	public boolean Act(Message arg0) {
+	public boolean Act(Message msg) {
+		this.UpdateAWStateValue(_AWS_RecentReport, null);
+		
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
+			ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+			
+			if(_orderList.isEmpty()){
+				ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
+				
+				MsgReport _reportMsg = _reportList.remove(0);
+				
+				this.UpdateAWStateValue(_AWS_WaitedReport, _reportList);
+				msg.SetValue(_OE_ReportOut, _reportMsg);
+			}else {
+				MsgOrder _orderMsg = _orderList.remove(0);
+				
+				this.UpdateAWStateValue(_AWS_WaitedOrder, _orderList);
+				
+				msg.SetValue(_OE_OrderOut, _orderMsg);
+			}
+			
 			return true;
 		}
 		return false;
@@ -87,10 +110,36 @@ public class RedCompanyC2Action extends BasicActionModel {
 	@Override
 	public boolean Decide() {
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-			this.UpdateActStateValue(_AS_Action, _AS.PROC);
+			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
+				this.UpdateActStateValue(_AS_Action, _AS.PROC);
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
+				Continue();
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
+				Continue();
+			}
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
-			this.UpdateActStateValue(_AS_Action, _AS.WAIT);
+			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
+				Continue();
+			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
+				Continue();
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
+				Continue();
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == null){
+				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+				ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
+				if(_orderList.isEmpty() && _reportList.isEmpty()){
+					this.UpdateActStateValue(_AS_Action, _AS.WAIT);
+					
+				}else {
+					this.UpdateActStateValue(_AS_Action, _AS.PROC);
+				}
+				
+			}
 			return true;
 		}
 		return false;
@@ -105,15 +154,24 @@ public class RedCompanyC2Action extends BasicActionModel {
 			if(_reportMsg._reportType == ReportType.EnemyInfo){
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.EnemyInfo);
 				
-				MsgLocNotice _locNotice = (MsgLocNotice)_reportMsg._msgValue;
-				ArrayList<CEInfo> objectList = _locNotice._nearbyList;
+				
+				MsgLocNotice _locNoticeList = (MsgLocNotice)_reportMsg._msgValue;
+				MsgLocNotice _newLocNotice = new MsgLocNotice(_locNoticeList);
+				MsgReport _newReport = new MsgReport(ReportType.EnemyInfo, this._modelUUID, null, _newLocNotice);
+				this.addNewReport(_newReport);
+				
+				ArrayList<CEInfo> _detectedList = _locNoticeList.GetNearByList();
+				
+				if(_detectedList.isEmpty()){
+					Continue();
+					return true;
+				}
 				
 				if(this.GetConStateValue(_CS_Mode) == _MODE.FIRE){
-					//find objective enemy
 					CEInfo object = (CEInfo)this.GetAWStateValue(_AWS_FireObject);
 					CEInfo _currentObj = null;
-					
-					for(CEInfo eachInfo : objectList){
+
+					for(CEInfo eachInfo : _detectedList){
 						if(eachInfo._id.equals(object._id)){
 							_currentObj = eachInfo;
 							break;
@@ -124,19 +182,38 @@ public class RedCompanyC2Action extends BasicActionModel {
 						Continue();
 						return true;
 					}else {
-						objectList.remove(_currentObj);
+						_detectedList.remove(_currentObj);
 						
 						if(_currentObj._HP <= 0){
 							//stop fire or next fire
 							///////
-							if(objectList.size() <= 1){
+							if(_detectedList.size() <= 1){
 								MsgOrder _newOrder = new MsgOrder(OrderType.STOP, this._modelUUID, this._modelUUID, null);
-								this.UpdateAWStateValue(_AWS_FireObject, null);	
+								this.UpdateAWStateValue(_AWS_FireObject, null);
+								this.UpdateConStateValue(_CS_Mode, _MODE.MOVE);
+								this.addNewOrder(_newOrder);
+								
+								CEInfo _myInfo = (CEInfo)this.GetAWStateValue(_AWS_MyInfo);
+								
+								try {
+									PathFinder.calculatePath();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								Path _path = PathFinder.getTotalPath(_myInfo._currentGrid);
+								MsgMoveOrder _moveOrder = new MsgMoveOrder(_path); 
+								MsgOrder _newOrder2 = new MsgOrder(OrderType.Move, this._modelUUID, this._modelUUID, _moveOrder);
+								this.UpdateConStateValue(_CS_Mode, _MODE.MOVE);
+								this.addNewOrder(_newOrder2);
+								
 							}else {
-								CEInfo _newObject = objectList.remove(0);
+								this.UpdateConStateValue(_CS_Mode, _MODE.FIRE);
+								CEInfo _newObject = _detectedList.remove(0);
 								MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
 								MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, _newDirOrder);
-								this.UpdateAWStateValue(_AWS_FireObject, _newObject);	
+								this.UpdateAWStateValue(_AWS_FireObject, _newObject);
+								this.addNewOrder(_newOrder);
 							}
 							
 						}else {
@@ -144,36 +221,41 @@ public class RedCompanyC2Action extends BasicActionModel {
 							this.UpdateAWStateValue(_AWS_FireObject, _currentObj);	
 						}
 					}
-
 					
 				}else if(this.GetConStateValue(_CS_Mode)== _MODE.MOVE){
-					// make new  object
-					
-					CEInfo object = objectList.get(0);
-					
-					
+					//TODO remember last position 
+					CEInfo _newObject;
+					_newObject = _detectedList.remove(0);
+					MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
+					MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, _newDirOrder);
+					this.UpdateAWStateValue(_AWS_FireObject, _newObject);
+					this.UpdateConStateValue(_CS_Mode, _MODE.FIRE);
+					this.addNewOrder(_newOrder);
 				}
 				
-			}else if(_reportMsg._reportType == ReportType.LocationChange){
-				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
-				CEInfo _newInfo =_locUpdate._myInfo;
-				this.UpdateAWStateValue(_AWS_MyInfo, _newInfo);
 				
-			}else if(_reportMsg._reportType == ReportType.Assessment){
+			}else if(_reportMsg._reportType == ReportType.LocationChange){
+				//don't have to report upper model
+				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
-				CEInfo _newInfo =_locUpdate._myInfo;
-				this.UpdateAWStateValue(_AWS_MyInfo, _newInfo);
+				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
 				
 				Continue();
-				return true;
-				//TODO if dead?
+				
+				////////done 
+			}
+			else if(_reportMsg._reportType == ReportType.Assessment){
+				//don't have to report upper model
+				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.Assessment);
+				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
+				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
+				
+				Continue();
+				
+				///////done 
 			}
 			
-			if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
-				return true;
-			}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
-				return true;
-			}
+			return true;
 		}else if(msg.GetDstEvent() == _IE_OrderIn){
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
 			
@@ -195,17 +277,25 @@ public class RedCompanyC2Action extends BasicActionModel {
 				
 				if((boolean)_orderMsg._orderMsg == true){
 					//emergency status, automatically activate
+					Continue();
 				}else {
 					// not emergency status
 					this.UpdateConStateValue(_CS_Mode, _MODE.MOVE);
 					// make move order
-					PathFinder.calculatePath();
-					ArrayList<XY> _path = PathFinder.getPath(...);
-					MsgMoveOrder _moveOrder = new MsgMoveOrder(_path);
-					MsgOrder _newOrder = new MsgOrder(OrderType.Move, this._modelUUID, this._modelUUID, _moveOrder);
-					ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
-					_waitedOrder.add(_newOrder);
-					this.UpdateAWStateValue(_AWS_WaitedOrder, _waitedOrder);
+					
+					CEInfo _myInfo = (CEInfo)this.GetAWStateValue(_AWS_MyInfo);
+					
+					try {
+						PathFinder.calculatePath();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Path _path = PathFinder.getTotalPath(_myInfo._currentGrid);
+					MsgMoveOrder _moveOrder = new MsgMoveOrder(_path); 
+					MsgOrder _newOrder2 = new MsgOrder(OrderType.Move, this._modelUUID, this._modelUUID, _moveOrder);
+					this.UpdateConStateValue(_CS_Mode, _MODE.MOVE);
+					this.addNewOrder(_newOrder2);
 					
 				}
 				return true;
@@ -223,5 +313,24 @@ public class RedCompanyC2Action extends BasicActionModel {
 		}
 		return 0;
 	}
+	
+
+	private void addNewOrder(MsgOrder _newOrder){
+		ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+		_orderList.add(_newOrder);
+		this.UpdateAWStateValue(_AWS_WaitedOrder, _orderList);
+	}
+	
+	private void addNewReport(MsgReport _newReport){
+		
+		ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
+		_reportList.add(_newReport);
+		
+		this.UpdateAWStateValue(_AWS_WaitedReport, _reportList);
+		
+		
+	}
+	
+//	
 
 }
