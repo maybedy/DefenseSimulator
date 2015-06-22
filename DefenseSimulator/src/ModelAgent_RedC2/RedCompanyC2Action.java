@@ -6,6 +6,7 @@ import CommonInfo.CEInfo;
 import CommonInfo.UUID;
 import CommonInfo.XY;
 import CommonPathFinder.PathFinder;
+import MsgC2Order.MsgDirEngOrder;
 import MsgC2Order.MsgMoveOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
@@ -102,12 +103,15 @@ public class RedCompanyC2Action extends BasicActionModel {
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
 			
 			if(_reportMsg._reportType == ReportType.EnemyInfo){
+				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.EnemyInfo);
+				
 				MsgLocNotice _locNotice = (MsgLocNotice)_reportMsg._msgValue;
 				ArrayList<CEInfo> objectList = _locNotice._nearbyList;
+				
 				if(this.GetConStateValue(_CS_Mode) == _MODE.FIRE){
 					//find objective enemy
 					CEInfo object = (CEInfo)this.GetAWStateValue(_AWS_FireObject);
-					CEInfo _currentObj;
+					CEInfo _currentObj = null;
 					
 					for(CEInfo eachInfo : objectList){
 						if(eachInfo._id.equals(object._id)){
@@ -115,23 +119,33 @@ public class RedCompanyC2Action extends BasicActionModel {
 							break;
 						}
 					}
-
-					if(_currentObj._HP <= 0){
-						//stop fire or next fire
-						///////
-						if(objectList.size() > 1){
-							MsgOrder _newOrder = new MsgOrder(OrderType.STOP, this._modelUUID, this._modelUUID, null);
-							this.UpdateAWStateValue(_AWS_FireObject, null);	
-						}else {
-							
-							MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, );
-							this.UpdateAWStateValue(_AWS_FireObject, );	
-						}
-						
+					
+					if(_currentObj == null){
+						Continue();
+						return true;
 					}else {
-						//keep fire
-						this.UpdateAWStateValue(_AWS_FireObject, eachInfo);	
+						objectList.remove(_currentObj);
+						
+						if(_currentObj._HP <= 0){
+							//stop fire or next fire
+							///////
+							if(objectList.size() <= 1){
+								MsgOrder _newOrder = new MsgOrder(OrderType.STOP, this._modelUUID, this._modelUUID, null);
+								this.UpdateAWStateValue(_AWS_FireObject, null);	
+							}else {
+								CEInfo _newObject = objectList.remove(0);
+								MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
+								MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, _newDirOrder);
+								this.UpdateAWStateValue(_AWS_FireObject, _newObject);	
+							}
+							
+						}else {
+							//keep fire
+							this.UpdateAWStateValue(_AWS_FireObject, _currentObj);	
+						}
 					}
+
+					
 				}else if(this.GetConStateValue(_CS_Mode)== _MODE.MOVE){
 					// make new  object
 					

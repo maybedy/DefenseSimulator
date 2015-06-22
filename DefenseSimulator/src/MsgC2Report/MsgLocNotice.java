@@ -5,16 +5,14 @@ import CommonInfo.CEInfo;
 import CommonInfo.UUID;
 
 public class MsgLocNotice {
-	public UUID _destUUID;
 	public ArrayList<CEInfo> _nearbyList;
 	
 	public MsgLocNotice() {
 		this._nearbyList = new ArrayList<CEInfo>();
 	}
 	
-	public MsgLocNotice(UUID _destUUID){
-		this._destUUID = _destUUID; 
-		this._nearbyList = new ArrayList<CEInfo>(); 
+	public MsgLocNotice(MsgLocNotice _msgLocNotice){
+		_nearbyList = new ArrayList<CEInfo>(_msgLocNotice._nearbyList);
 	}
 	
 	public void SetNearByList(ArrayList<CEInfo> _nearbyList){
@@ -27,9 +25,5 @@ public class MsgLocNotice {
 	
 	public ArrayList<CEInfo> GetNearByList(){
 		return this._nearbyList;
-	}
-	
-	public UUID GetDstUUID() {
-		return this._destUUID;
 	}
 }
