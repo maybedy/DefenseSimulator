@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import CommonInfo.CEInfo;
 import MsgC2Report.MsgLocNotice;
 import MsgC2Report.MsgLocUpdate;
+import MsgC2Report.MsgReport;
+import MsgC2Report.ReportType;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class Detection extends BasicActionModel {
 
 	public static String _IE_LocNoticeIn = "LocNoticeIn";
-	public static String _IE_LocUpdate = "LocUpdate";
+	public static String _IE_LocUpdate = "MyInfoIn";
 	public static String _OE_ReportOut = "ReportOut";
 	
 	private static String _AS_Action = "Action";
@@ -26,10 +28,14 @@ public class Detection extends BasicActionModel {
 		Stop, Report
 	}
 	
+	public CommonInfo.UUID _modelID;
+	
 	public Detection(CEInfo _myInfo) {
 		// TODO Auto-generated constructor stub
 		String _name = "DetectionAction";
 		SetModelName(_name);
+		
+		_modelID = _myInfo._id;
 		
 		/*
 		 * Add Input and Output Port
@@ -55,8 +61,9 @@ public class Detection extends BasicActionModel {
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _ActState.Report){
 			MsgLocNotice _detectedAgents = (MsgLocNotice)this.GetAWStateValue(_AWS_DetectedList);
-			
-			msg.SetValue(_OE_ReportOut, _detectedAgents);
+			MsgReport _reportMsg = new MsgReport(ReportType.EnemyInfo, this._modelID, null, _detectedAgents);
+			//TODO dest UUID???
+			msg.SetValue(_OE_ReportOut, _reportMsg);
 			return true;
 		}
 		return false;
@@ -77,13 +84,17 @@ public class Detection extends BasicActionModel {
 	@Override
 	public boolean Perceive(Message msg) {
 		if(msg.GetDstEvent() == _IE_LocNoticeIn){// from env, info of nearby agents
-			MsgLocNotice _locNotice = (MsgLocNotice)msg.GetValue();
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			MsgLocNotice _locNotice = (MsgLocNotice)_reportMsg._msgValue;
+			
 			this.UpdateConStateValue(_AWS_DetectedList, _locNotice);
-
+			
 			return true;
 		}else if(msg.GetDstEvent() == _IE_LocUpdate){
-			MsgLocUpdate _locUpdate= (MsgLocUpdate)msg.GetValue();
-			this.UpdateConStateValue(_CS_MyInfo, _locUpdate._myInfo);
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			MsgLocUpdate _locMsg = (MsgLocUpdate)_reportMsg._msgValue;
+			
+			this.UpdateConStateValue(_CS_MyInfo, _locMsg._myInfo);
 			Continue();
 			return true;
 		}

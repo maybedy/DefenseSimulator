@@ -167,13 +167,19 @@ public class Movement extends BasicActionModel {
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
 			MsgLocUpdate _myInfoMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			this.UpdateConStateValue(_CS_MyInfo, _myInfoMsg._myInfo);
+			
+			Continue();
 		}else if(msg.GetDstEvent() == _IE_OrderIn){
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
 			if(_orderMsg._orderType == OrderType.STOP){
+				
 				this.UpdateAWStateValue(_AWS_CurrentPath, null);
+				
 			}else if(_orderMsg._orderType == OrderType.Move){
+				
 				MsgMoveOrder _moveOrderMsg = (MsgMoveOrder)_orderMsg._orderMsg;
 				this.UpdateAWStateValue(_AWS_CurrentPath, _moveOrderMsg.getPath());
+				
 			}
 			
 		}

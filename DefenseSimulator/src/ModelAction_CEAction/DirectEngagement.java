@@ -102,6 +102,8 @@ public class DirectEngagement extends BasicActionModel {
 			if(_orderMsg._orderType == OrderType.DirectEngagement){
 				MsgDirEngOrder _dirOrdMsg = (MsgDirEngOrder)_orderMsg._orderMsg;
 				this.UpdateAWStateValue(_AWS_DETECTED_ENEMY, _dirOrdMsg._enemyInfo);
+			}else if(_orderMsg._orderType == OrderType.STOP){
+				this.UpdateAWStateValue(_AWS_DETECTED_ENEMY, null);
 			}
 			
 			return true;	

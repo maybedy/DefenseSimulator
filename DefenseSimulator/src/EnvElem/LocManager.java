@@ -1,18 +1,20 @@
 package EnvElem;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
+import CommonInfo.CEInfo;
+import CommonInfo.XY;
+import MsgC2Report.MsgLocNotice;
+import MsgC2Report.MsgLocUpdate;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicEnvElement;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class LocManager extends BasicEnvElement {
-	protected String _IE_LocUpdate_B = "LocUpdateIn_B";
-	protected String _IE_LocUpdate_R = "LocUpdateIn_R";
+	public String _IE_LocUpdate = "LocUpdateIn";
 	
-	protected String _OE_LocNotice_B = "LocNotice_B";
-	protected String _OE_LocNotice_R = "LocNotice_R";
-	
-	protected String _OE_LocUpdate = "LocUpdate";
+	public String _OE_LocNotice = "LocNoticeOut";
+	public String _OE_LocUpdate = "LocUpdateOut";
 	
 	protected String _ST_Act = "ActState";
 	protected enum ActState{
@@ -37,15 +39,12 @@ public class LocManager extends BasicEnvElement {
 		/*
 		 * Add Input Port
 		 */
-		AddInputEvent(_IE_LocUpdate_B);
-		AddInputEvent(_IE_LocUpdate_R);
+		AddInputEvent(_IE_LocUpdate);
 		
 		/*
 		 * Add Output Port
 		 */
-		AddOutputEvent(_OE_LocNotice_B);
-		AddOutputEvent(_OE_LocNotice_R);
-		
+		AddOutputEvent(_OE_LocNotice);
 		AddOutputEvent(_OE_LocUpdate);
 		
 		/*
@@ -69,7 +68,7 @@ public class LocManager extends BasicEnvElement {
 
 	@Override
 	public boolean Delta(Message msg) {
-		if(msg.GetDstEvent() == _IE_LocUpdate_B || msg.GetDstEvent() == _IE_LocUpdate_R) {
+		if(msg.GetDstEvent() == _IE_LocUpdate) {
 			MsgLocUpdate _msg_locupdate = (MsgLocUpdate)msg.GetValue();
 			CEInfo _agent_info = new CEInfo(_msg_locupdate.GetMyInfo()); //cloning
 			

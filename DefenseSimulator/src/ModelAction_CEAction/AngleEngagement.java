@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import CommonInfo.CEInfo;
 import MsgC2Order.MsgFireOrder;
 import MsgC2Order.MsgOrder;
+import MsgC2Report.MsgLocUpdate;
+import MsgC2Report.MsgReport;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
@@ -94,6 +96,7 @@ public class AngleEngagement extends BasicActionModel {
 	@Override
 	public boolean Perceive(Message msg) {
 		if(msg.GetDstEvent() == _IE_OrderIn){
+			
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
 			MsgFireOrder _fireOrdMsg = (MsgFireOrder)_orderMsg._orderMsg;
 			ArrayList<MsgFireOrder> orderList = (ArrayList<MsgFireOrder>)this.GetAWStateValue(_AWS_Q_AngleOrder);
@@ -101,13 +104,20 @@ public class AngleEngagement extends BasicActionModel {
 			orderList.add(_fireOrdMsg);
 			this.UpdateAWStateValue(_AWS_Q_AngleOrder, orderList);
 			
+			if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
+				
+			}else if(this.GetActStateValue(_AS_ACTION)== _AS.Fire){
+				Continue();
+			}
 			return true;	
 		}else if(msg.GetDstEvent() == _IE_MyInfoIn){
+			//won't be happened
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			MsgLocUpdate _locMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			
-			CEInfo _myInfo = (CEInfo)msg.GetValue();
-			
-			this.UpdateConStateValue(_CS_MYINFO, _myInfo);
+			this.UpdateConStateValue(_CS_MYINFO, _locMsg._myInfo);
 			Continue();
+			return true;
 		}
 		return false;
 	}

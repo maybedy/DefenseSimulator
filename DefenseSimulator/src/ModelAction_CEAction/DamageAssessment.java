@@ -75,23 +75,24 @@ public class DamageAssessment extends BasicActionModel {
 			ArrayList<MsgAngleDmg> _angleFireList = (ArrayList<MsgAngleDmg>)this.GetAWStateValue(_AWS_AngleDamageQueue);
 			
 			if(_directFireList.isEmpty()){
-				if(_angleFireList.isEmpty()){
-					// should not be happened
-					System.out.println("Error - shouldn't be happened");
-					return false;
-				}else {
-					MsgAngleDmg _angleDmgMsg = _angleFireList.remove(0);
-					_newHP = _myInfo.applyAssessment(_angleDmgMsg);
-				}
+				//nothing happened
 			}else {
-				MsgDirectFire _directFireMsg = _directFireList.remove(0);
-				_newHP = _myInfo.applyAssessment(_directFireMsg);
-				
+				for(MsgDirectFire _eachMsg : _directFireList){
+					_newHP = _myInfo.applyAssessment(_eachMsg);					
+				}
+				_directFireList.clear();
+				this.UpdateAWStateValue(_AWS_DirectDamageQueue, _directFireList);
 			}
-			/*
-			MsgAssessment _assessMsg = new MsgAssessment(_newHP);
-			_myInfo._HP = _newHP;*/
 			
+			if(_angleFireList.isEmpty()){
+				//nothing
+			}else {
+				for(MsgAngleDmg _eachMsg : _angleFireList){
+					_newHP = _myInfo.applyAssessment(_eachMsg);					
+				}
+				_angleFireList.clear();
+				this.UpdateAWStateValue(_AWS_AngleDamageQueue, _angleFireList);
+			}
 			MsgLocUpdate _myInfoMsg = new MsgLocUpdate(_myInfo);
 			MsgReport _reportMsg = new MsgReport(ReportType.Assessment, this._modelUUID, null, _myInfoMsg);
 			
@@ -160,6 +161,12 @@ public class DamageAssessment extends BasicActionModel {
 				this.makeContinue();
 			}
 			return true;
+		}else if(msg.GetDstEvent() == _IE_MyInfoIn){
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			MsgLocUpdate _locMsg = (MsgLocUpdate)_reportMsg._msgValue;
+			
+			this.UpdateConStateValue(_CS_MyInfo, _locMsg._myInfo);
+			Continue();
 		}
 		
 		
