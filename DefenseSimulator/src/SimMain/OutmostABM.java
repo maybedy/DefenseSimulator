@@ -61,14 +61,6 @@ public class OutmostABM extends BasicAgentBasedModel {
 		 * creating Model phase 
 		 */
 		SetModelName("OutmostABM");
-		CEInfo _redInfo = new CEInfo();
-		UUID _redUUID = new UUID(null);
-		_redInfo._id = _redUUID;
-		CEInfo _blueInfo = new CEInfo();
-		UUID _blueUUID = new UUID(null);
-		_blueInfo._id = _blueUUID;
-		
-		
 		
 		RedMA red = _agentFactory._redMAM;
 		BlueMA blue = _agentFactory._blueMAM;

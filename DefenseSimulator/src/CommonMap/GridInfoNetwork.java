@@ -1,8 +1,11 @@
 package CommonMap;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ScenarioParsing.IOUtil;
 import CommonInfo.XY;
 import CommonPathFinder.PathFinder;
 import edu.kaist.seslab.ldef.parser.scenario.ParameterGroup;
@@ -17,16 +20,24 @@ public class GridInfoNetwork {
 	public GridInfoNetwork() {
 	}
 	
-	public static void gridInfoFactory(ParameterGroup _gridParameterGroup) throws IOException{
+	public static void gridInfoFactory(String name) throws IOException{
 		
 		gridInfoList = new ArrayList<GridInfo>();
 		
-		//TODO make new grid and put to _gridInfoList
-				// Info is coming from _gridParameterGroup
+		BufferedReader parBr= null;
 		
-		
+		try {
+			parBr = IOUtil.getBufferedReaderInJar(name);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		////////////////////////////////////////////////////////
+		parBr.readLine();
+		
+		
+		
+		
 		pathFinder = new PathFinder();
 		
 		PathFinder.calculatePath();

@@ -29,20 +29,51 @@ public class CEInfo {
 	public WTTypeParam _weaponParam; 
 	
 	
-	public CEInfo(){
-		_myLoc = new XY();
+	public CEInfo(UUID _id, XY _loc, GridInfo _grid){
+		_id =new UUID(_id);
+		_myLoc = new XY(_loc);
+		this._currentGrid = _grid;
+		
 	}
 	
 	public CEInfo(CEInfo _info){
 		_id = new UUID(_info._id);
 		_myLoc = new XY(_info._myLoc);
-		this._detectRange = _info._detectRange;	
+		
+		this._currentGrid = _info._currentGrid;
+		this._unitType = _info._unitType;
+		this._HP = _info._HP;
+		this._detectRange = _info._detectRange;
+		
+		this._movable = _info._movable;
+		this._maxSpeed = _info._maxSpeed;
+		this._detectable = _info._detectable;
+		this._detectRange = _info._detectRange;
+		this._detectRate = _info._detectRate;
+		
+		this._engageable = _info._engageable;
+		this._weaponType = _info._weaponType;
+		this._weaponParam = _info._weaponParam;
 	}
 	
 	public void setInfo(CEInfo _info){
 		_id.setUUID(_info._id);
 		_myLoc.setXY(_info._myLoc);
+		
+		this._currentGrid = _info._currentGrid;
+		this._unitType = _info._unitType;
+		this._HP = _info._HP;
 		this._detectRange = _info._detectRange;
+		
+		this._movable = _info._movable;
+		this._maxSpeed = _info._maxSpeed;
+		this._detectable = _info._detectable;
+		this._detectRange = _info._detectRange;
+		this._detectRate = _info._detectRate;
+		
+		this._engageable = _info._engageable;
+		this._weaponType = _info._weaponType;
+		this._weaponParam = _info._weaponParam;
 	}
 	
 	public double applyAssessment(){
