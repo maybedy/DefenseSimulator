@@ -1,13 +1,10 @@
 package ModelAction_CEAction;
 
-import java.util.ArrayList;
-
 import CommonInfo.CEInfo;
 import CommonInfo.Path;
 import CommonInfo.UUID;
 import CommonInfo.XY;
 import CommonMap.GridInfo;
-import CommonMap.GridInfoNetwork;
 import MsgC2Order.MsgMoveOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
@@ -23,7 +20,6 @@ public class Movement extends BasicActionModel {
 	public static String _OE_LocUpdateOut = "LocUpdateOut";
 	
 	private static String _CS_CurrentLoc = "CurrentLocation"; // XY
-	//private static String _CS_Movable = "Movable"; // boolean
 	private static String _CS_MyInfo = "MyInfo";  // CEInfo
 	private static String _CS_CurrentDirection = "CurrentDirection"; // double
 	private static String _CS_CurrentObjective = "CurrentObjective"; // XY
@@ -40,7 +36,7 @@ public class Movement extends BasicActionModel {
 	}
 	
 	private double _PARAM_MaxSpeed;
-
+	
 	public Movement(CEInfo _myInfo) {
 		String _name = "MovementAction";
 		SetModelName(_name);
@@ -71,6 +67,8 @@ public class Movement extends BasicActionModel {
 	private XY UpdateMyLoc(XY currentLoc, double direction, double speed, XY _currCheckpoint) {
 		// TODO update new loc
 		XY ret = currentLoc.calEndPoint(speed, direction);
+		
+		System.out.println(_modelUUID.getString() + " - " + currentLoc.x + ", " + currentLoc.y);
 		
 		return ret;
 	}

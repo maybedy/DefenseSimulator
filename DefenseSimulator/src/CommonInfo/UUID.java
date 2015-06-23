@@ -186,7 +186,7 @@ public class UUID {
 	public String getString(){
 		//TODO make it
 		
-		return this._name;
+		return String.valueOf(this._side.value) + String.valueOf(this._battlionIndex) + String.valueOf(this._unitType.value) +  String.valueOf(this._unitIndex);
 	}
 	
 }
