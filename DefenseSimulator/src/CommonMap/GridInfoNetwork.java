@@ -23,6 +23,12 @@ public class GridInfoNetwork {
 	public static void gridInfoFactory(String name) throws IOException{
 		
 		gridInfoList = new ArrayList<GridInfo>();
+		GridInfo _dummyGrid = new GridInfo(-1, new XY(0,0), 0);
+		gridInfoList.add(_dummyGrid);
+		
+		
+		///iteration 
+		
 		
 		BufferedReader parBr= null;
 		
@@ -35,6 +41,21 @@ public class GridInfoNetwork {
 
 		parBr.readLine();
 		
+		String line;
+		String[] list;
+		
+		while((line = parBr.readLine())!= null){
+			list = line.split(",");
+			
+			int index= Integer.parseInt(list[0]);
+			double x= Double.parseDouble(list[1]);
+			double y= Double.parseDouble(list[2]);
+			int obstacle = Integer.parseInt(list[3]);
+			
+			GridInfo _newGrid = new GridInfo(index, new XY(x, y), obstacle);
+			gridInfoList.add(_newGrid);
+			
+		}
 		
 		
 		

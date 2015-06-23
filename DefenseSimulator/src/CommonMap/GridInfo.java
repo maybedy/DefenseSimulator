@@ -10,16 +10,21 @@ public class GridInfo {
 	
 	public int _gridIndex;
 	public XY _mainLoc;
+	public int obstacle;
 	
 	//TODO fill the information 
 	
 	
-	public GridInfo() {
-	}
-	
-	public void putGridInfo(int _gridIndex, XY _mainLoc){
+	public GridInfo(int _gridIndex, XY _mainLoc, int obstacle) {
 		this._gridIndex = _gridIndex;
 		this._mainLoc = new XY(_mainLoc);
+		this.obstacle = obstacle;
+	}
+	
+	public void putGridInfo(int _gridIndex, XY _mainLoc, int obstacle){
+		this._gridIndex = _gridIndex;
+		this._mainLoc = new XY(_mainLoc);
+		this.obstacle = obstacle;
 	}
 	
 	public boolean isInThisGrid(XY _loc){

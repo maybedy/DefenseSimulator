@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
 import edu.kaist.seslab.ldef.parser.scenario.ParameterGroup;
 import edu.kaist.seslab.ldef.parser.scenario.Scenario;
 import CommonInfo.CEInfo;
@@ -16,7 +17,15 @@ import CommonMap.GridInfoNetwork;
 import CommonType.WTType;
 import CommonType.WTTypeAngleParam;
 import CommonType.WTTypeDirectParam;
+import ModelAgent_BlueC2.BlueBattalionC2;
+import ModelAgent_BlueC2.BlueCompany;
+import ModelAgent_BlueC2.Sensor;
+import ModelAgent_BlueC2.Shooter;
+import ModelAgent_RedC2.RedBattalionC2;
+import ModelAgent_RedC2.RedCompany;
+import ModelMultiAgent_Blue.BlueBattalion;
 import ModelMultiAgent_Blue.BlueMA;
+import ModelMultiAgent_Red.RedBattalion;
 import ModelMultiAgent_Red.RedMA;
 
 public class AgentFactory {
@@ -81,6 +90,11 @@ public class AgentFactory {
 		String[] list;
 		String[] list2 = new String[5];
 		String name;
+		ArrayList<BlueCompany> _blueCompanyList = new ArrayList<BlueCompany>();
+		ArrayList<Sensor> _blueSensorList = new ArrayList<Sensor>();
+		ArrayList<Shooter> _blueShooterList = new ArrayList<Shooter>();
+		ArrayList<RedCompany> _redCompanyList = new ArrayList<RedCompany>();
+		ArrayList<RedBattalion> _redBattalionlist= new ArrayList<RedBattalion>();
 		
 		try{
 			parBr.readLine();
@@ -158,11 +172,46 @@ public class AgentFactory {
 					//error
 				}
 				
+				
+				
+				BasicAgentModel _newAgent = null;
+				
+				if(name.equalsIgnoreCase("BlueBattalionC2")){
+					_newAgent = new BlueBattalionC2(_newAgentInfo,_blueCompanyList, _blueShooterList);
+					BlueBattalion _battalion = new BlueBattalion(, (BlueBattalionC2)_newAgent, _blueCompanyList, _blueSensorList, _blueShooterList);
+					
+					_blueMAM = new BlueMA(_myInfo, _battalion);
+				}else if(name.equalsIgnoreCase("BlueCompanyC2")){
+					_newAgent = new BlueCompany(_newAgentInfo);
+					_blueCompanyList.add((BlueCompany)_newAgent);
+				}else if(name.equalsIgnoreCase("BlueShooter")){
+					_newAgent = new Shooter(_newAgentInfo); 
+					_blueShooterList.add((Shooter)_newAgent);
+				}else if(name.equalsIgnoreCase("BlueSensor")){
+					_newAgent = new Sensor(_newAgentInfo);
+					_blueSensorList.add((Sensor)_newAgent);
+				}else if(name.equalsIgnoreCase("RedBattalionC2")){
+					
+					_newAgent = new RedBattalionC2(_newAgentInfo, _redCompanyList);
+					RedBattalion _battalion = new RedBattalion(, (RedBattalionC2)_newAgent, _redCompanyList);
+					_redBattalionlist.add(_battalion);
+					
+					_redCompanyList = new ArrayList<RedCompany>();
+				}else if(name.equalsIgnoreCase("RedCompanyC2")){
+					_newAgent = new RedCompany(_newAgentInfo);
+					_redCompanyList.add((RedCompany)_newAgent);
+					
+				}else {
+					
+				}
+				
+				
 			}
 		} catch (Exception e){
 			
 		}
 		
+		_redMAM = new RedMA(_myInfo, _redBattalionlist);
 	}
 	
 	
