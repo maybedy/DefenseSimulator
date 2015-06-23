@@ -8,8 +8,13 @@ import EnvMultiEnv.MultiEnvModel;
 import ModelMultiAgent_Blue.BlueMA;
 import ModelMultiAgent_Red.RedMA;
 import MsgCommon.MsgDirectFire;
+import ScenarioParsing.AgentFactory;
+import ScenarioParsing.DefenseSimulatorScenarioProvider;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentBasedModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
+import edu.kaist.seslab.ldef.parser.scenario.ParameterGroup;
+import edu.kaist.seslab.ldef.parser.scenario.Scenario;
+import edu.kaist.seslab.ldef.parser.scenario.ScenarioParser;
 
 public class OutmostABM extends BasicAgentBasedModel {
 
@@ -36,9 +41,14 @@ public class OutmostABM extends BasicAgentBasedModel {
 	@Override
 	public void createModels() {
 		
+		Scenario sce = this.getScenario();
+		
 		/*
 		 * parsing CSV file phase
 		 */
+		
+		AgentFactory _agentFactory = new AgentFactory(sce);
+		_agentFactory.generatingAgent();
 		
 		
 		// TODO 
@@ -60,10 +70,10 @@ public class OutmostABM extends BasicAgentBasedModel {
 		
 		
 		
-		RedMA red = new RedMA();
-		BlueMA blue = new BlueMA();
+		RedMA red = _agentFactory._redMAM;
+		BlueMA blue = _agentFactory._blueMAM;
 		
-		MultiEnvModel multiEnv = new MultiEnvModel();
+		MultiEnvModel multiEnv = new MultiEnvModel(_agentFactory._listOfAgent_B, _agentFactory._listOfAgent_R);
 		
 		red.Activated();
 		blue.Activated();
@@ -88,8 +98,12 @@ public class OutmostABM extends BasicAgentBasedModel {
 
 		InputStream input = loader.getResourceAsStream("input_param.csv");
 		
+		DefenseSimulatorScenarioProvider sceProvider = new DefenseSimulatorScenarioProvider();
+		
 		try{
-			
+			Scenario sce= sceProvider.getScenario();
+			ScenarioParser.parseCSVFile(input, sce);
+			this.setScenario(sce);
 			
 		} catch (Exception e){
 			e.printStackTrace();
