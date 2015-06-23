@@ -3,21 +3,20 @@ package CommonInfo;
 import java.util.Random;
 
 public class XY {
-	//XY is in degree(not radian)
 	
+	//XY is in meter
 	public double x,y;
 	
 	private static final double EARTH_CIRC_METERS = 40030218; /// in meter
 
 	public XY()	{
-		
 		x = 0;
 		y = 0;
 	}
 	
 	public XY(double x1, double y1) {
-		// X is Lat, Y : long
-		// x1, y1 should be degree
+		// X is meter, Y : meter
+		// x1, y1 should be meter
 		// TODO Auto-generated constructor stub
 		x = x1;
 		y = y1;
@@ -50,28 +49,7 @@ public class XY {
 		
 		//return in meter
 		
-		//using great circle distance formula
-		
-		double Lat1,Lat2,Lon1,Lon2;
-		
-		Lat1 = Math.toRadians(this.x);
-	    Lat2 = Math.toRadians(input.x);
-	    Lon1 = Math.toRadians(this.y);
-	    Lon2 = Math.toRadians(input.y); 
-	    if(Lat1 == Lat2 && Lon1 == Lon2){
-			return 0;
-		}
-		
-	    // do the spherical trig calculation
-	    double angle = Math.acos(Math.sin(Lat1) * Math.sin(Lat2)  +
-	                               Math.cos(Lat1) * Math.cos(Lat2) * Math.cos(Lon1 - Lon2));
-	
-	    // convert back to d1egrees
-	    angle = Math.toDegrees(angle);
-	
-	    // each degree on a great circle of Earth is 69.1105 miles
-	    double distance = 69.1105 * angle;
-	    distance = distance * 1.609344 * 1000; // convert into meter
+	    double distance = Math.sqrt((x-input.x)*(x-input.x) + (y-input.y)*(y-input.y));
 	
 		return distance;
 	}
