@@ -35,14 +35,12 @@ public class CEInfo {
 	public CEInfo(CEInfo _info){
 		_id = new UUID(_info._id);
 		_myLoc = new XY(_info._myLoc);
-		this._state = _info._state;
 		this._detectRange = _info._detectRange;	
 	}
 	
 	public void setInfo(CEInfo _info){
 		_id.setUUID(_info._id);
 		_myLoc.setXY(_info._myLoc);
-		this._state = _info._state;
 		this._detectRange = _info._detectRange;
 	}
 	

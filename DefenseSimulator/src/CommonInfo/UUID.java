@@ -32,10 +32,10 @@ public class UUID {
 		public int getV()				{ return value; }
 	}
 	
-	public UUID( String[] list){
+	public UUID( String name, String[] list){
 		_side = UUIDSideType.None;
 		
-		_name = "";
+		this._name = name;
 		
 		switch( list[0 ]){
 			case "Blue":
@@ -46,8 +46,8 @@ public class UUID {
 				switch( list[2] ){
 				case "BattalionC2" : _unitType = UnitType.BattalionC2; break;
 				case "CompanyC2" : _unitType = UnitType.CompanyC2; break;
-				case "SHOOTER" : _unitType = UnitType.SHOOTER; break;
-				case "SENSOR" : _unitType = UnitType.SENSOR; break;
+				case "Shooter" : _unitType = UnitType.SHOOTER; break;
+				case "Sensor" : _unitType = UnitType.SENSOR; break;
 				}
 				
 				switch( list[3] ){
@@ -60,6 +60,7 @@ public class UUID {
 					case "7": _unitIndex = 7; break;
 					case "8": _unitIndex = 8; break;
 					case "9": _unitIndex = 9; break;
+					default : break;
 				}
 				break;
 			case "Red" : 
@@ -84,6 +85,7 @@ public class UUID {
 					case "7": _unitIndex = 7; break;
 					case "8": _unitIndex = 8; break;
 					case "9": _unitIndex = 9; break;
+					default : break;
 				}
 				break;
 		}
@@ -179,7 +181,7 @@ public class UUID {
 	
 	public String getString(){
 		//TODO make it
-		String name = "" ;
+		String name = "";
 		return name;
 	}
 	
