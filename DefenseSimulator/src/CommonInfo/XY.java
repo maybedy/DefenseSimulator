@@ -3,7 +3,9 @@ package CommonInfo;
 import java.util.Random;
 
 public class XY {
-	
+	/*
+	 * this version is meter, meter XY
+	 */
 	//XY is in meter
 	public double x,y;
 	
@@ -60,18 +62,12 @@ public class XY {
 		//return in degree
 		
 		double brng;
-		double x1,y1;
+		double dx, dy;
 		
-		double Lat1,Lat2,Lon1,Lon2;
-		
-		Lat1 = Math.toRadians(this.x);
-	    Lat2 = Math.toRadians(input.x);
-	    Lon1 = Math.toRadians(this.y);
-	    Lon2 = Math.toRadians(input.y);
-	    
-	    x1 = Math.sin(Lon2 - Lon1)  * Math.cos(Lat2);
-	    y1 = Math.cos(Lat1) * Math.sin(Lat2) - Math.sin(Lat1) * Math.cos(Lat2) * Math.cos(Lon2- Lon1);
-	    brng = Math.toDegrees(Math.atan2(x1,y1));
+		dx = input.x- this.x;
+		dy = input.y - this.y;
+
+		brng = Math.toDegrees(Math.atan2(dy,dx));
 	    
 	    return brng;
 	    
@@ -82,40 +78,21 @@ public class XY {
 	public XY calEndPoint(double r, double angle) //angle in degree, r in meter
 	{
 		//return in XY(degree, degree)
-		XY ret = new XY(0,0);
 		
-		double radAngle = Math.toRadians(angle);
-		double Lat1, Lat2, Lon1, Lon2;
-		double dist = r/1000; // convert to km
-		double earth_Rad = 6378.1;
-		
-		Lat1 = Math.toRadians(this.x);
-		Lon1 = Math.toRadians(this.y);
-	
-		Lat2 = Math.asin( Math.sin(Lat1)*Math.cos(dist/earth_Rad) + 
-	              Math.cos(Lat1)*Math.sin(dist/earth_Rad)*Math.cos(radAngle));
-		Lon2 = Lon1 + Math.atan2(Math.sin(radAngle)*Math.sin(dist/earth_Rad)*Math.cos(Lat1), 
-                Math.cos(dist/earth_Rad)-Math.sin(Lat1)*Math.sin(Lat2));
-		
-		Lat2 = Math.toDegrees(Lat2);
-		Lon2 = Math.toDegrees(Lon2);
+		double dx, dy;
+		dx = r * Math.sin(angle);
+		dy = r * Math.cos(angle);
 		
 		
-		ret =new XY(Lat2, Lon2);
+		XY ret =new XY(x+ dx, y + dy);
 				
 		return ret;
 	}
 	
 	public XY calEndPointRect(double x, double y){// x, y in meter
 		XY ret;
-		//return XY(degree, degree)
-		//transform into r & angle
-		
-		double r, angle;
-		r = Math.sqrt(x*x + y * y);
-		angle = 90 - Math.toDegrees(Math.atan2(y, x));
-		
-		ret = calEndPoint(r,angle);
+		//return XY(meter, meter)
+		ret = new XY(this.x + x, this.y + y);
 		
 		return ret;
 	}
@@ -149,7 +126,6 @@ public class XY {
 	}
 	
 	public void move(XY input){
-		//don't use
 		x+=input.x;
 		y+=input.y;
 	}
