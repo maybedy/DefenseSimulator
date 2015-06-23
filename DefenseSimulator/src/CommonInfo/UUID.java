@@ -1,7 +1,5 @@
 package CommonInfo;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
 public class UUID {
 	
 	public UUIDSideType _side;

@@ -94,7 +94,7 @@ public class CEInfo {
 	public double applyAssessment(MsgAngleDmg _msgAngleDmg){
 		//TODO change dmg assessment function
 		double _newHP = _HP;
-
+		
 		return _newHP;
 	}
 
