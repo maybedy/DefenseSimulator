@@ -1,5 +1,4 @@
 Name,Regiment,Battalion,Type,Number,X,Y,cell no.
-BlueBattalionC2,Blue,1,BattalionC2,,0,0,-1
 BlueCompanyC2,Blue,1,CompanyC2,1,54427,93790,510
 BlueCompanyC2,Blue,1,CompanyC2,2,55567,93790,516
 BlueCompanyC2,Blue,1,CompanyC2,3,57445,93689,478
@@ -8,15 +7,16 @@ BlueSensor,Blue,1,Sensor,2,55657,95791,1404
 BlueSensor,Blue,1,Sensor,3,56506,96506,1721
 BlueShooter,Blue,1,Shooter,1,0,0,-1
 BlueShooter,Blue,1,Shooter,2,0,0,-1
-RedBattalionC2,Red,1,BattalionC2,,0,0,-1
+BlueBattalionC2,Blue,1,BattalionC2,-1,0,0,-1
 RedCompanyC2,Red,1,CompanyC2,1,54360,99892,3221
 RedCompanyC2,Red,1,CompanyC2,2,54360,99892,3221
 RedCompanyC2,Red,1,CompanyC2,3,54360,99892,3221
-RedBattalionC2,Red,2,BattalionC2,,0,0,-1
+RedBattalionC2,Red,1,BattalionC2,-1,0,0,-1
 RedCompanyC2,Red,2,CompanyC2,1,55299,99691,3130
 RedCompanyC2,Red,2,CompanyC2,2,55299,99691,3130
 RedCompanyC2,Red,2,CompanyC2,3,55299,99691,3130
-RedBattalionC2,Red,3,BattalionC2,,0,0,-1
+RedBattalionC2,Red,2,BattalionC2,-1,0,0,-1
 RedCompanyC2,Red,3,CompanyC2,1,56506,99624,3113
 RedCompanyC2,Red,3,CompanyC2,2,56506,99624,3113
 RedCompanyC2,Red,3,CompanyC2,3,56506,99624,3113
+RedBattalionC2,Red,3,BattalionC2,-1,0,0,-1
