@@ -22,6 +22,7 @@ public class CEInfo {
 	
 	public boolean _detectable;
 	public double _detectRange;
+	public double _detectRate;
 	
 	public boolean _engageable;
 	public WTType _weaponType;
