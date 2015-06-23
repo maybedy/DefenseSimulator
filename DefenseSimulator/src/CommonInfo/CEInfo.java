@@ -1,6 +1,7 @@
 package CommonInfo;
 
 import CommonMap.GridInfo;
+import CommonMap.GridInfoNetwork;
 import CommonType.CEType;
 import CommonType.WTType;
 import CommonType.WTTypeParam;
@@ -27,6 +28,13 @@ public class CEInfo {
 	public boolean _engageable;
 	public WTType _weaponType;
 	public WTTypeParam _weaponParam; 
+	
+	public CEInfo(UUID _id){
+		_id = new UUID(_id);
+		_myLoc = new XY(0,0);
+		this._currentGrid = GridInfoNetwork.findMyGrid(-1);
+		
+	}
 	
 	
 	public CEInfo(UUID _id, XY _loc, GridInfo _grid){

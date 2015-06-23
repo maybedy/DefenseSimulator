@@ -25,7 +25,7 @@ public class GridInfoNetwork {
 		gridInfoList = new ArrayList<GridInfo>();
 		GridInfo _dummyGrid = new GridInfo(-1, new XY(0,0), 0);
 		gridInfoList.add(_dummyGrid);
-		
+		GridInfo._totalNumGrid++;
 		
 		///iteration 
 		
@@ -54,6 +54,7 @@ public class GridInfoNetwork {
 			
 			GridInfo _newGrid = new GridInfo(index, new XY(x, y), obstacle);
 			gridInfoList.add(_newGrid);
+			GridInfo._totalNumGrid++;
 			
 		}
 		

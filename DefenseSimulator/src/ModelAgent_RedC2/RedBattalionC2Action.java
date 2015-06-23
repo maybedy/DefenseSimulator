@@ -225,7 +225,7 @@ public class RedBattalionC2Action extends BasicActionModel {
 					GridInfo _currentGrid = _companyInfo._currentGrid;
 					XY _currentLoc = _companyInfo._myLoc;
 					if(_currentGrid._mainLoc.equalsWithError(_currentLoc)){
-						if(_currentGrid._gridIndex == ){// TODO check spreadout place
+						if(_currentLoc.y<= 95411){// TODO check spreadout place
 							//not automatically
 							MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, false);
 							ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);

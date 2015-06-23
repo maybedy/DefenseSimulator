@@ -7,11 +7,11 @@ public class UUID {
 	public UUIDSideType _side;
 	public UnitLevel _unitLevel;
 	
-	private String _name;
+	public String _name;
 	
-	private int _battlionIndex;
+	public int _battlionIndex;
 	public UnitType _unitType;
-	private int _unitIndex;
+	public int _unitIndex;
 	
 	
 	public enum UnitLevel{ REGIMENT, BATTLION, COMPANY, NONE}
@@ -108,7 +108,8 @@ public class UUID {
 			if((_side == _target.getSide())
 					&& (_battlionIndex == _target.getBattalionIndex())
 					&& (_unitType == _target.getUnitType())
-					&& (_unitIndex == _target.getUnitIndex()))
+					&& (_unitIndex == _target.getUnitIndex())
+					&& (_unitLevel == _target._unitLevel))
 				return true;
 			else
 				return false;	

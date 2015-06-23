@@ -5,7 +5,7 @@ import CommonInfo.XY;
 public class GridInfo {
 	
 	public static double _r = 10;
-	public static int _totalNumGrid;
+	public static int _totalNumGrid=0;
 	
 	
 	public int _gridIndex;

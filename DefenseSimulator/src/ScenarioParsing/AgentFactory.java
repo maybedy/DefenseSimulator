@@ -6,12 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.sun.javafx.print.Units;
+
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicAgentModel;
 import edu.kaist.seslab.ldef.parser.scenario.ParameterGroup;
 import edu.kaist.seslab.ldef.parser.scenario.Scenario;
 import CommonInfo.CEInfo;
 import CommonInfo.UUID;
 import CommonInfo.XY;
+import CommonInfo.UUID.UUIDSideType;
+import CommonInfo.UUID.UnitLevel;
+import CommonInfo.UUID.UnitType;
 import CommonMap.GridInfo;
 import CommonMap.GridInfoNetwork;
 import CommonType.WTType;
@@ -106,6 +111,7 @@ public class AgentFactory {
 				}
 				
 				UUID _newID = new UUID(name, list2);
+				_newID._unitLevel = UnitLevel.COMPANY;
 				
 				double x, y;
 				int index; 
@@ -178,9 +184,25 @@ public class AgentFactory {
 				
 				if(name.equalsIgnoreCase("BlueBattalionC2")){
 					_newAgent = new BlueBattalionC2(_newAgentInfo,_blueCompanyList, _blueShooterList);
-					BlueBattalion _battalion = new BlueBattalion(, (BlueBattalionC2)_newAgent, _blueCompanyList, _blueSensorList, _blueShooterList);
+					UUID _id = new UUID(_newAgentInfo._id);
+					_id._unitType = UnitType.CORPS;
+					_id._unitLevel = UnitLevel.BATTLION;
+					_id._unitIndex = -1;
+					_id._name = "BlueBattalion";
+					CEInfo _batInfo = new CEInfo(_id);
 					
-					_blueMAM = new BlueMA(_myInfo, _battalion);
+					
+					BlueBattalion _battalion = new BlueBattalion(_batInfo, (BlueBattalionC2)_newAgent, _blueCompanyList, _blueSensorList, _blueShooterList);
+					
+					UUID _id2 = new UUID(_id);
+					_id._unitType = UnitType.CORPS;
+					_id2._unitLevel = UnitLevel.REGIMENT;
+					_id2._name = "BlueMultiAgent";
+					_id2._battlionIndex = -1;
+					_id2._unitIndex = -1;
+					CEInfo _blueMAInfo = new CEInfo(_id2);
+					_blueMAM = new BlueMA(_blueMAInfo, _battalion);
+					
 				}else if(name.equalsIgnoreCase("BlueCompanyC2")){
 					_newAgent = new BlueCompany(_newAgentInfo);
 					_blueCompanyList.add((BlueCompany)_newAgent);
@@ -193,7 +215,14 @@ public class AgentFactory {
 				}else if(name.equalsIgnoreCase("RedBattalionC2")){
 					
 					_newAgent = new RedBattalionC2(_newAgentInfo, _redCompanyList);
-					RedBattalion _battalion = new RedBattalion(, (RedBattalionC2)_newAgent, _redCompanyList);
+					
+					UUID _id = new UUID(_newAgentInfo._id);
+					_id._unitType = UnitType.CORPS;
+					_id._unitLevel = UnitLevel.BATTLION;
+					_id._name = "RedBattalion";
+					CEInfo _batInfo = new CEInfo(_id);
+
+					RedBattalion _battalion = new RedBattalion(_batInfo, (RedBattalionC2)_newAgent, _redCompanyList);
 					_redBattalionlist.add(_battalion);
 					
 					_redCompanyList = new ArrayList<RedCompany>();
@@ -211,7 +240,16 @@ public class AgentFactory {
 			
 		}
 		
-		_redMAM = new RedMA(_myInfo, _redBattalionlist);
+		UUID _id = new UUID(_blueMAM._modelUUID);
+		_id._side = UUIDSideType.Red;
+		_id._unitType = UnitType.CORPS;
+		_id._unitLevel = UnitLevel.REGIMENT;
+		_id._battlionIndex = -1;
+		_id._unitIndex = -1;
+		_id._name = "RedMultiAgent";
+		CEInfo _magInfo = new CEInfo(_id);
+		
+		_redMAM = new RedMA(_magInfo, _redBattalionlist);
 	}
 	
 	
