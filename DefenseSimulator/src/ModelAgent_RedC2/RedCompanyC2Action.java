@@ -48,6 +48,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 	
 	private static String _AWS_MyInfo = "MyInfo";
 	
+	private boolean isContinuable=true;
 	public UUID _modelUUID;
 	
 	public RedCompanyC2Action(CEInfo _myInfo) {
@@ -114,28 +115,52 @@ public class RedCompanyC2Action extends BasicActionModel {
 				this.UpdateActStateValue(_AS_Action, _AS.PROC);
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				Continue();
+				if(this.isContinuable)
+					Continue();
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
-				Continue();
-			}
-			return true;
-		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
-			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
-				Continue();
-			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				Continue();
-			}
-			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
-				Continue();
-			}
-			else if(this.GetAWStateValue(_AWS_RecentReport) == null){
+				if(this.isContinuable)
+					Continue();
+			}else {
 				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 				ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
 				if(_orderList.isEmpty() && _reportList.isEmpty()){
+					this.isContinuable = false;
+					ResetContinue();
 					this.UpdateActStateValue(_AS_Action, _AS.WAIT);
 					
 				}else {
+					this.isContinuable = false;
+					ResetContinue();
+					this.UpdateActStateValue(_AS_Action, _AS.PROC);
+				}
+			}
+			
+			
+			return true;
+		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
+			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
+				if(this.isContinuable)
+					Continue();
+			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
+				if(this.isContinuable)
+					Continue();
+			}
+			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
+				if(this.isContinuable)
+					Continue();
+			}
+			else {
+				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
+				ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
+				if(_orderList.isEmpty() && _reportList.isEmpty()){
+					this.isContinuable = false;
+					ResetContinue();
+					this.UpdateActStateValue(_AS_Action, _AS.WAIT);
+					
+				}else {
+					this.isContinuable = false;
+					ResetContinue();
 					this.UpdateActStateValue(_AS_Action, _AS.PROC);
 				}
 				
@@ -163,7 +188,8 @@ public class RedCompanyC2Action extends BasicActionModel {
 				ArrayList<CEInfo> _detectedList = _locNoticeList.GetNearByList();
 				
 				if(_detectedList.isEmpty()){
-					Continue();
+					if(this.isContinuable)
+						Continue();
 					return true;
 				}
 				
@@ -179,7 +205,8 @@ public class RedCompanyC2Action extends BasicActionModel {
 					}
 					
 					if(_currentObj == null){
-						Continue();
+						if(this.isContinuable)
+							Continue();
 						return true;
 					}else {
 						_detectedList.remove(_currentObj);
@@ -240,7 +267,8 @@ public class RedCompanyC2Action extends BasicActionModel {
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
 				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
 				
-				Continue();
+				if(this.isContinuable)
+					Continue();
 				
 				////////done 
 			}
@@ -250,7 +278,8 @@ public class RedCompanyC2Action extends BasicActionModel {
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
 				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
 				
-				Continue();
+				if(this.isContinuable)
+					Continue();
 				
 				///////done 
 			}
@@ -277,7 +306,8 @@ public class RedCompanyC2Action extends BasicActionModel {
 				
 				if((boolean)_orderMsg._orderMsg == true){
 					//emergency status, automatically activate
-					Continue();
+					if(this.isContinuable)
+						Continue();
 				}else {
 					// not emergency status
 					this.UpdateConStateValue(_CS_Mode, _MODE.MOVE);
@@ -306,6 +336,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 
 	@Override
 	public double TimeAdvance() {
+		this.isContinuable = true;
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			return Double.POSITIVE_INFINITY;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){

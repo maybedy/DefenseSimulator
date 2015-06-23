@@ -52,6 +52,12 @@ public class RedCompany extends BasicAgentModel {
 		engment.Activated();
 		mvment.Activated();
 		
+		this.AddActionModel(rCC2);
+		this.AddActionModel(dmgAss);
+		this.AddActionModel(detAction);
+		this.AddActionModel(engment);
+		this.AddActionModel(mvment);
+		
 		AddInputEvent(_IE_LocNoticeIn);
 		AddInputEvent(_IE_AngleDmgIn);
 		AddInputEvent(_IE_DirectFireIn);
@@ -98,7 +104,7 @@ public class RedCompany extends BasicAgentModel {
 	@Override
 	public boolean Delta(Message msg) {
 		
-		if(msg.GetDstEvent() == RedCompanyC2Action._OE_OrderOut){
+		if(msg.GetSrcEvent() == RedCompanyC2Action._OE_OrderOut){
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
 			
 			if(_orderMsg._orderType == OrderType.DirectEngagement){

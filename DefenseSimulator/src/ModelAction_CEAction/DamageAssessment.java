@@ -22,6 +22,8 @@ public class DamageAssessment extends BasicActionModel {
 	private static String _AWS_DirectDamageQueue = "DirectDamageQueue";
 	private static String _AWS_AngleDamageQueue = "AngleDamageQueue";
 	
+	private static String _AWS_RecentReport = "RecentReport";
+	
 	private static String _CS_MyHP = "HP";
 	private static String _CS_MyInfo = "MyInfo";
 	
@@ -52,9 +54,12 @@ public class DamageAssessment extends BasicActionModel {
 		AddConState(_AWS_DirectDamageQueue, new ArrayList<MsgDirectFire>());
 		AddConState(_AWS_AngleDamageQueue, new ArrayList<MsgAngleDmg>());
 		
+		AddAwState(_AWS_RecentReport, null);
 		
 		AddConState(_CS_MyHP, _myInfo._HP, true, STATETYPE_NUMERIC);
 		AddConState(_CS_MyInfo, _myInfo);
+		
+		
 		
 		AddActState(_AS_Action, _ActState.Stop, true, STATETYPE_CATEGORY);
 		
@@ -62,6 +67,7 @@ public class DamageAssessment extends BasicActionModel {
 
 	@Override
 	public boolean Act(Message msg) {
+		this.UpdateAWStateValue(_AWS_RecentReport, null);
 		if(this.GetActStateValue(_AS_Action) == _ActState.Stop){
 			
 			// no need to make msg
@@ -107,6 +113,11 @@ public class DamageAssessment extends BasicActionModel {
 	
 	@Override
 	public boolean Decide() {
+		if(this.GetAWStateValue(_AWS_RecentReport) != null){
+			this.makeContinue();
+			return true;
+		}
+		
 		if(this.GetActStateValue(_AS_Action) == _ActState.Stop){
 			this._isContinuable = false;
 			ResetContinue();
@@ -137,12 +148,12 @@ public class DamageAssessment extends BasicActionModel {
 	public boolean Perceive(Message msg) {
 		
 		if(msg.GetDstEvent() == _IE_AngleDmgIn){
+			this.UpdateAWStateValue(_AWS_RecentReport, null);
 			ArrayList<MsgAngleDmg> _angleDmgList = (ArrayList<MsgAngleDmg>)this.GetAWStateValue(_AWS_AngleDamageQueue);
 			MsgAngleDmg _angleDmgMsg = (MsgAngleDmg)msg.GetValue();
 			_angleDmgList.add(_angleDmgMsg);
 			
 			this.UpdateAWStateValue(_AWS_AngleDamageQueue, _angleDmgList);
-			
 			
 			if(this.GetActStateValue(_AS_Action) == _ActState.Stop){
 			}else if(this.GetActStateValue(_AS_Action) == _ActState.Calculate){
@@ -150,6 +161,7 @@ public class DamageAssessment extends BasicActionModel {
 			}
 			return true;
 		}else if(msg.GetDstEvent() == _IE_DirectFireIn){
+			this.UpdateAWStateValue(_AWS_RecentReport, null);
 			ArrayList<MsgDirectFire> _directDmgList = (ArrayList<MsgDirectFire>)this.GetAWStateValue(_AWS_DirectDamageQueue);
 			MsgDirectFire _directFireMsg = (MsgDirectFire)msg.GetValue();
 			_directDmgList.add(_directFireMsg);
@@ -162,14 +174,15 @@ public class DamageAssessment extends BasicActionModel {
 			}
 			return true;
 		}else if(msg.GetDstEvent() == _IE_MyInfoIn){
+			this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
 			MsgLocUpdate _locMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			
 			this.UpdateConStateValue(_CS_MyInfo, _locMsg._myInfo);
-			Continue();
+			this.makeContinue();
+			
+			return true;
 		}
-		
-		
 		
 		return false;
 	}

@@ -49,6 +49,12 @@ public class BlueCompany extends BasicAgentModel {
 		detAction.Activated();
 		engment.Activated();
 		
+		this.AddActionModel(bPC2);
+		this.AddActionModel(dmgAss);
+		this.AddActionModel(detAction);
+		this.AddActionModel(engment);
+		
+		
 		AddCouplingState(_CS_Normal, true);
 		
 		AddCoupling(_CS_Normal, true, this, _IE_LocNoticeIn, detAction, detAction._IE_LocNoticeIn);
@@ -66,7 +72,10 @@ public class BlueCompany extends BasicAgentModel {
 		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, this, this._OE_LocUpdateOut);
 		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, detAction, detAction._IE_LocUpdate);
 		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, engment, engment._IE_MyInfoIn);
-		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, this, this._OE_LocUpdateOut);		
+		AddCoupling(_CS_Normal, true, dmgAss, dmgAss._OE_AssessOut, this, this._OE_LocUpdateOut);
+		
+///////////////////		
+		AddCoupling(_CS_Normal, true, detAction, detAction._OE_ReportOut, this, this._OE_ReportOut);
 		
 	}
 

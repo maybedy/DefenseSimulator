@@ -17,7 +17,7 @@ public class Sensor extends BasicAgentModel {
 	public Sensor(CEInfo _myInfo) {
 		String _name = "Sensor";
 		SetModelName(_name);
-		this._modelUUID = _myInfo._id;
+		this._modelUUID = new UUID(_myInfo._id);
 		
 		AddInputEvent(_IE_LocNoticeIn);
 		AddOutputEvent(_OE_ReportOut);
@@ -32,6 +32,7 @@ public class Sensor extends BasicAgentModel {
 		AddCoupling(_CS_Normal, true, this, _IE_LocNoticeIn, detAction, Detection._IE_LocNoticeIn);
 		AddCoupling(_CS_Normal, true, detAction, Detection._OE_ReportOut, this, _OE_ReportOut);
 		
+		System.out.println(this._modelUUID.getString() + "made");
 		
 	}
 

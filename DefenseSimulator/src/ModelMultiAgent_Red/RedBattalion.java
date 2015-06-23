@@ -64,7 +64,7 @@ public class RedBattalion extends BasicMultiAgentModel {
 			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_LocUpdateOut, this, this._OE_LocUpdateOut);
 			
 			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_ReportOut, _C2Agent, _C2Agent._IE_ReportIn);
-			
+			System.out.println("AddCouplingBranch:"+ _eachCompany._modelUUID.getUniqID_Batt());
 			this.AddCoupling(_CS_MsgBranch, _eachCompany._modelUUID.getUniqID_Batt(), _C2Agent, _C2Agent._OE_OrderOut, _eachCompany, _eachCompany._IE_OrderIn);
 			
 		}
@@ -73,9 +73,9 @@ public class RedBattalion extends BasicMultiAgentModel {
 
 	@Override
 	public boolean Delta(Message msg) {
-		if(msg.GetDstEvent() == RedCompany._IE_OrderIn){
+		if(msg.GetDstEvent() == RedBattalionC2._OE_OrderOut){
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
-			
+			System.out.println(_orderMsg._destUUID.getUniqID_Batt());
 			this.updateCouplingState(_CS_MsgBranch, _orderMsg._destUUID.getUniqID_Batt(), true);
 			return true;
 		}else {

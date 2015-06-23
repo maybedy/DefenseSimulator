@@ -101,6 +101,9 @@ public class AgentFactory {
 		ArrayList<RedCompany> _redCompanyList = new ArrayList<RedCompany>();
 		ArrayList<RedBattalion> _redBattalionlist= new ArrayList<RedBattalion>();
 		
+		ArrayList<CEInfo> _blueCEInfoList = new ArrayList<CEInfo>();
+		ArrayList<CEInfo> _redCEInfoList = new ArrayList<CEInfo>();
+		
 		try{
 			parBr.readLine();
 			while((line = parBr.readLine())!= null){
@@ -173,7 +176,8 @@ public class AgentFactory {
 					_newAgentInfo._weaponType = WTType.R_DirectFire;
 					_newAgentInfo._weaponParam = _redDirect;
 				}else if(weaponType.equalsIgnoreCase("NONE")){
-					
+					_newAgentInfo._weaponType = WTType.Unknown;
+					_newAgentInfo._weaponParam = null;
 				}else {
 					//error
 				}
@@ -184,6 +188,10 @@ public class AgentFactory {
 				
 				if(name.equalsIgnoreCase("BlueBattalionC2")){
 					_newAgent = new BlueBattalionC2(_newAgentInfo,_blueCompanyList, _blueShooterList);
+					_blueCEInfoList.add(_newAgentInfo);
+					System.out.println(_newAgentInfo._id.getString());
+					
+					
 					UUID _id = new UUID(_newAgentInfo._id);
 					_id._unitType = UnitType.CORPS;
 					_id._unitLevel = UnitLevel.BATTLION;
@@ -193,51 +201,66 @@ public class AgentFactory {
 					
 					
 					BlueBattalion _battalion = new BlueBattalion(_batInfo, (BlueBattalionC2)_newAgent, _blueCompanyList, _blueSensorList, _blueShooterList);
+					_blueCEInfoList.add(_batInfo);
+					System.out.println(_id.getString());
 					
 					UUID _id2 = new UUID(_id);
-					_id._unitType = UnitType.CORPS;
+					_id2._unitType = UnitType.CORPS;
 					_id2._unitLevel = UnitLevel.REGIMENT;
 					_id2._name = "BlueMultiAgent";
 					_id2._battlionIndex = -1;
 					_id2._unitIndex = -1;
 					CEInfo _blueMAInfo = new CEInfo(_id2);
+					_blueCEInfoList.add(_blueMAInfo);
 					_blueMAM = new BlueMA(_blueMAInfo, _battalion);
+					System.out.println(_id2.getString());
 					
 				}else if(name.equalsIgnoreCase("BlueCompanyC2")){
 					_newAgent = new BlueCompany(_newAgentInfo);
+					_blueCEInfoList.add(_newAgentInfo);
+					System.out.println(_newAgentInfo._id.getString());
 					_blueCompanyList.add((BlueCompany)_newAgent);
+					
 				}else if(name.equalsIgnoreCase("BlueShooter")){
-					_newAgent = new Shooter(_newAgentInfo); 
+					_newAgent = new Shooter(_newAgentInfo);
+					_blueCEInfoList.add(_newAgentInfo);
+					System.out.println(_newAgentInfo._id.getString());
 					_blueShooterList.add((Shooter)_newAgent);
 				}else if(name.equalsIgnoreCase("BlueSensor")){
+					_blueCEInfoList.add(_newAgentInfo);
 					_newAgent = new Sensor(_newAgentInfo);
+					System.out.println(_newAgentInfo._id.getString());
 					_blueSensorList.add((Sensor)_newAgent);
 				}else if(name.equalsIgnoreCase("RedBattalionC2")){
-					
+					_redCEInfoList.add(_newAgentInfo);
 					_newAgent = new RedBattalionC2(_newAgentInfo, _redCompanyList);
+					System.out.println(_newAgentInfo._id.getString());
 					
 					UUID _id = new UUID(_newAgentInfo._id);
 					_id._unitType = UnitType.CORPS;
 					_id._unitLevel = UnitLevel.BATTLION;
 					_id._name = "RedBattalion";
 					CEInfo _batInfo = new CEInfo(_id);
-
+					_redCEInfoList.add(_batInfo);
 					RedBattalion _battalion = new RedBattalion(_batInfo, (RedBattalionC2)_newAgent, _redCompanyList);
 					_redBattalionlist.add(_battalion);
+					System.out.println(_id.getString());
 					
 					_redCompanyList = new ArrayList<RedCompany>();
 				}else if(name.equalsIgnoreCase("RedCompanyC2")){
 					_newAgent = new RedCompany(_newAgentInfo);
 					_redCompanyList.add((RedCompany)_newAgent);
-					
+					_redCEInfoList.add(_newAgentInfo);
+					System.out.println(_newAgentInfo._id.getString());
 				}else {
 					
 				}
 				
 				
+				
 			}
 		} catch (Exception e){
-			
+			return;
 		}
 		
 		UUID _id = new UUID(_blueMAM._modelUUID);
@@ -248,8 +271,11 @@ public class AgentFactory {
 		_id._unitIndex = -1;
 		_id._name = "RedMultiAgent";
 		CEInfo _magInfo = new CEInfo(_id);
-		
+		_redCEInfoList.add(_magInfo);
 		_redMAM = new RedMA(_magInfo, _redBattalionlist);
+		
+		_listOfAgent_B = _blueCEInfoList;
+		_listOfAgent_R = _redCEInfoList;
 	}
 	
 	

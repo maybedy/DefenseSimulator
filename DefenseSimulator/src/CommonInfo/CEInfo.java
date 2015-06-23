@@ -30,23 +30,24 @@ public class CEInfo {
 	public WTTypeParam _weaponParam; 
 	
 	public CEInfo(UUID _id){
-		_id = new UUID(_id);
-		_myLoc = new XY(0,0);
+		this._id = new UUID();
+		this._id.setUUID(_id);
+		this._myLoc = new XY(0,0);
 		this._currentGrid = GridInfoNetwork.findMyGrid(-1);
 		
 	}
 	
 	
 	public CEInfo(UUID _id, XY _loc, GridInfo _grid){
-		_id =new UUID(_id);
-		_myLoc = new XY(_loc);
+		this._id = new UUID(_id);
+		this._myLoc = new XY(_loc);
 		this._currentGrid = _grid;
 		
 	}
 	
 	public CEInfo(CEInfo _info){
-		_id = new UUID(_info._id);
-		_myLoc = new XY(_info._myLoc);
+		this._id = new UUID(_info._id);
+		this._myLoc = new XY(_info._myLoc);
 		
 		this._currentGrid = _info._currentGrid;
 		this._unitType = _info._unitType;
@@ -65,8 +66,8 @@ public class CEInfo {
 	}
 	
 	public void setInfo(CEInfo _info){
-		_id.setUUID(_info._id);
-		_myLoc.setXY(_info._myLoc);
+		this._id.setUUID(_info._id);
+		this._myLoc.setXY(_info._myLoc);
 		
 		this._currentGrid = _info._currentGrid;
 		this._unitType = _info._unitType;

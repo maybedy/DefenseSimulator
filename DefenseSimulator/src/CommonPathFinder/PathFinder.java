@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import CommonInfo.Path;
 import CommonMap.GridInfo;
+import CommonMap.GridInfoNetwork;
 
 public class PathFinder {
 	
@@ -30,12 +31,33 @@ public class PathFinder {
 		
 		// TODO calculate path 
 		
-		ArrayList<GridInfo> _pathList= null;
+		try {
+			calculatePath();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ArrayList<GridInfo> _pathList= new ArrayList<GridInfo>();
 		
+		_pathList.add(_grid);
+		
+		while(true){
+			
+			GridInfo _nextGrid = GridInfoNetwork.getNextPlace(_grid);
+			
+			if(_pathList.contains(_nextGrid)){
+				break;
+			}else {
+				_pathList.add(_nextGrid);
+				
+				if(_nextGrid._gridIndex <= 20){
+					break;
+				}
+			}
+		}
 		
 		
 		Path _newPath = new Path(_pathList);
-		
 		
 		return _newPath;
 	}

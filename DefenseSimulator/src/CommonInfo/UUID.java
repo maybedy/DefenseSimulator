@@ -90,6 +90,10 @@ public class UUID {
 		
 	}
 	
+	public UUID(){
+		
+	}
+	
 	
 	public UUID( UUID _uuid ){
 		this.setName(_uuid.getName());
@@ -125,6 +129,7 @@ public class UUID {
 	}
 	
 	public void setSide(UUIDSideType side){
+		
 		_side = side;
 	}
 	
@@ -157,7 +162,7 @@ public class UUID {
 	}
 	
 	public int getUniqID_Batt(){
-		return _unitType.getV()*10+_unitIndex;
+		return _unitType.value*10+_unitIndex;
 	}
 	
 	public int getUniqID_MAM(){
@@ -165,7 +170,7 @@ public class UUID {
 	}
 	
 	public int getUniqID_ABM(){
-		return this.getSide().getV();
+		return this._side.value;
 	}
 	
 /////////////////////////////////////////////
@@ -180,8 +185,8 @@ public class UUID {
 	
 	public String getString(){
 		//TODO make it
-		String name = "";
-		return name;
+		
+		return this._name;
 	}
 	
 }

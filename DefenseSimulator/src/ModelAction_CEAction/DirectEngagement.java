@@ -8,6 +8,8 @@ import CommonType.WTTypeDirectParam;
 import MsgC2Order.MsgDirEngOrder;
 import MsgC2Order.MsgOrder;
 import MsgC2Order.OrderType;
+import MsgC2Report.MsgLocUpdate;
+import MsgC2Report.MsgReport;
 import MsgCommon.MsgDirectFire;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicActionModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
@@ -25,7 +27,9 @@ public class DirectEngagement extends BasicActionModel {
 	
 	private static String _AWS_DETECTED_ENEMY = "DetectedEnemy";
 	
-	private static String _CS_MYINFO = "MyInfo";		
+	private static String _CS_MYINFO = "MyInfo";
+	
+	private boolean _isContinuable = true;
 	
 	private String _AS_ACTION = "Action";
 	private enum _AS{ 
@@ -75,15 +79,21 @@ public class DirectEngagement extends BasicActionModel {
 	@Override
 	public boolean Decide() {
 		if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
+			this._isContinuable = false;
+			ResetContinue();
 			this.UpdateActStateValue(_AS_ACTION, _AS.Fire);
 			return true;
 		}else if(this.GetActStateValue(_AS_ACTION) == _AS.Fire){
 			MsgOrder _msgDirectEngOrder = (MsgOrder)this.GetAWStateValue(_AWS_CurrentMission);
 			
 			if(_msgDirectEngOrder._orderType == OrderType.STOP){
+				this._isContinuable = false;
+				ResetContinue();
 				this.UpdateActStateValue(_AS_ACTION, _AS.Stop);
 				this.UpdateAWStateValue(_AWS_DETECTED_ENEMY, null);
 			}else if(_msgDirectEngOrder._orderType == OrderType.DirectEngagement){
+				this._isContinuable = false;
+				ResetContinue();
 				this.UpdateActStateValue(_AS_ACTION, _AS.Fire);
 			}
 			return true;
@@ -107,9 +117,12 @@ public class DirectEngagement extends BasicActionModel {
 			
 			return true;	
 		}else if(msg.GetDstEvent() == _IE_MyInfoIn){
-			CEInfo _myInfo = (CEInfo)msg.GetValue();
+			MsgReport _reportMsg = (MsgReport)msg.GetValue();
+			MsgLocUpdate _locUpdateMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			
-			this.UpdateConStateValue(_CS_MYINFO, _myInfo);
+			this.UpdateConStateValue(_CS_MYINFO, _locUpdateMsg._myInfo);
+			
+			makeContinue();
 			return true;
 		}
 		
@@ -118,6 +131,7 @@ public class DirectEngagement extends BasicActionModel {
 
 	@Override
 	public double TimeAdvance() {
+		this._isContinuable = true;
 		if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
 			return Double.POSITIVE_INFINITY;
 		}else if(this.GetActStateValue(_AS_ACTION) == _AS.Fire){
@@ -126,4 +140,12 @@ public class DirectEngagement extends BasicActionModel {
 		return 0;
 	}
 
+
+	public void makeContinue(){
+		if(this._isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
+	}
 }

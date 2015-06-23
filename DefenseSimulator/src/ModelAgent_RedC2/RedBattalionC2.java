@@ -16,7 +16,7 @@ public class RedBattalionC2 extends BasicAgentModel {
 
 
 	public RedBattalionC2(CEInfo _myInfo, ArrayList<RedCompany> _companyList) {
-		String _name = "RedC2";
+		String _name = "RedBattalionC2";
 		SetModelName(_name);
 		
 		/*
@@ -41,8 +41,8 @@ public class RedBattalionC2 extends BasicAgentModel {
 		redC2Action.Activated();
 		AddActionModel(redC2Action);
 		
-		AddCoupling(_CS_Normal, true, this, _IE_ReportIn, redC2Action, _IE_ReportIn);
-		AddCoupling(_CS_Normal, true, redC2Action, _OE_OrderOut, this, _OE_OrderOut);
+		AddCoupling(_CS_Normal, true, this, this._IE_ReportIn, redC2Action, redC2Action._IE_ReportIn);
+		AddCoupling(_CS_Normal, true, redC2Action, redC2Action._OE_OrderOut, this, this._OE_OrderOut);
 	}
 
 	@Override

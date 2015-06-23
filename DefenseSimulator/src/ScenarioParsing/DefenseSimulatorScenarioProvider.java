@@ -20,7 +20,7 @@ public class DefenseSimulatorScenarioProvider implements ScenarioProvider {
 		"maxSpeed",
 		"detectable",
 		"detectRange",
-		"dengageable",
+		"engageable",
 		"weaponType"
 	};
 	
@@ -29,8 +29,8 @@ public class DefenseSimulatorScenarioProvider implements ScenarioProvider {
 	};
 	
 	public static String _WT_Angle_Params[] = {
-		"vertical_error",
-		"horizontal_error",
+		"power",
+		"accuracyRate",
 		"casualty_radius",
 		"time_for_flight"
 	};
@@ -41,7 +41,8 @@ public class DefenseSimulatorScenarioProvider implements ScenarioProvider {
 	};
 	
 	public static String _WT_Direct_Params[] ={
-		
+		"power",
+		"accuracyRate"
 	};
 
 
@@ -76,10 +77,9 @@ public class DefenseSimulatorScenarioProvider implements ScenarioProvider {
 		
 		simParGroup.addParameter(new Parameter(simParGroup, Parameter.TYPE_STRING, "Simulation Endtime"));
 		simParGroup.addParameter(new Parameter(simParGroup, Parameter.TYPE_STRING, "OSM file"));
+		simParGroup.addParameter(new Parameter(simParGroup, Parameter.TYPE_STRING, "GridInfoFile"));
 		simParGroup.addParameter(new Parameter(simParGroup, Parameter.TYPE_STRING, "AgentLocFile"));
 		
-		
-
 		//////////////////////////////////////////////////////////////////////////
 		/*
 		 * For CEInfo
@@ -93,7 +93,7 @@ public class DefenseSimulatorScenarioProvider implements ScenarioProvider {
 			ParameterGroup CEInfo_AgentGroup = new ParameterGroup(CEInfoGroup, _CEInfo_Agent[i]);
 			CEInfoGroup.addParameterGroup(CEInfo_AgentGroup);
 			
-			for(int j = 0;j < _CEInfo_Params.length;i++){
+			for(int j = 0;j < _CEInfo_Params.length;j++){
 				CEInfo_AgentGroup.addParameter(new Parameter(CEInfo_AgentGroup, Parameter.TYPE_STRING, _CEInfo_Params[j]));
 			}
 			
@@ -113,7 +113,7 @@ public class DefenseSimulatorScenarioProvider implements ScenarioProvider {
 			ParameterGroup WTAngleSideGroup = new ParameterGroup(WTTypeParamGroup, _WT_Angle_Side[i]);
 			WTTypeParamGroup.addParameterGroup(WTAngleSideGroup);
 			
-			for(int j = 0;j < _WT_Angle_Params.length;i++){
+			for(int j = 0;j < _WT_Angle_Params.length;j++){
 				WTAngleSideGroup.addParameter(new Parameter(WTAngleSideGroup, Parameter.TYPE_STRING, _WT_Angle_Params[j]));
 			}
 			
@@ -123,13 +123,13 @@ public class DefenseSimulatorScenarioProvider implements ScenarioProvider {
 			ParameterGroup WTDirectSideGroup = new ParameterGroup(WTTypeParamGroup, _WT_Direct_Side[i]);
 			WTTypeParamGroup.addParameterGroup(WTDirectSideGroup);
 			
-			for(int j = 0;j < _WT_Direct_Params.length;i++){
+			for(int j = 0;j < _WT_Direct_Params.length;j++){
 				WTDirectSideGroup.addParameter(new Parameter(WTDirectSideGroup, Parameter.TYPE_STRING, _WT_Direct_Params[j]));
 			}
 			
 		}
 		
-		return null;
+		return sce;
 	}
 
 }

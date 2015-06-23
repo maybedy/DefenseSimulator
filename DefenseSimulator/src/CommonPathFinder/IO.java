@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
 
+import ScenarioParsing.IOUtil;
+
 
 public class IO {
 
@@ -22,9 +24,9 @@ public class IO {
 	}
 
 	public static void ReadReward( Variables Key, int FeatureNumber) throws IOException {
-		File f = new File("C:\\Users\\Jung Chi-jung\\workspace\\SEStermproject\\setting\\Feature_"+FeatureNumber+".txt");
-		FileReader fr = new FileReader(f);
-		BufferedReader br = new BufferedReader(fr);
+		BufferedReader br = null;
+		br = IOUtil.getBufferedReaderInJar("feature_"+FeatureNumber+".txt");
+		
 		
 		int Number_States = Key.getNumber_State();
 		

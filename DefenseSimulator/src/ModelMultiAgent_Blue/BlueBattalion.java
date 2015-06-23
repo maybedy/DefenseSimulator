@@ -41,7 +41,7 @@ public class BlueBattalion extends BasicMultiAgentModel {
 		
 		String _name = "BlueBattalion";
 		SetModelName(_name);
-		this._modelUUID = _myInfo._id;
+		this._modelUUID = new UUID(_myInfo._id);
 		
 		AddInputEvent(_IE_DirectFireIn);
 		AddInputEvent(_IE_LocNoticeIn);
@@ -51,7 +51,7 @@ public class BlueBattalion extends BasicMultiAgentModel {
 		AddOutputEvent(_OE_LocUpdateOut);
 		
 		this.AddCouplingState(_CS_Normal, true);
-		
+		this.AddCouplingState(_CS_MsgBranch, -1);
 		
 		this._C2Agent = _C2Agent;
 		_C2Agent.Activated();
@@ -63,7 +63,8 @@ public class BlueBattalion extends BasicMultiAgentModel {
 			_eachSensor.Activated();
 			this.addComponent(_eachSensor);
 			
-			this.AddCoupling(_CS_MsgBranch, _eachSensor._modelUUID.getUniqID_ABM(), this, this._IE_LocNoticeIn, _eachSensor, _eachSensor._IE_LocNoticeIn);
+			
+			this.AddCoupling(_CS_MsgBranch, _eachSensor._modelUUID.getUniqID_Batt(), this, BlueBattalion._IE_LocNoticeIn, _eachSensor, Sensor._IE_LocNoticeIn);
 			
 			this.AddCoupling(_CS_Normal, true, _eachSensor, _eachSensor._OE_ReportOut, _C2Agent, _C2Agent._IE_ReportIn);
 		}
@@ -85,7 +86,7 @@ public class BlueBattalion extends BasicMultiAgentModel {
 			this.addComponent(_eachCompany);
 			
 			this.AddCoupling(_CS_MsgBranch, _eachCompany._modelUUID.getUniqID_Batt(), this, this._IE_DirectFireIn, _eachCompany, _eachCompany._IE_DirectFireIn);
-			this.AddCoupling(_CS_MsgBranch, _eachCompany._modelUUID.getUniqID_Batt(), this, this._IE_LocNoticeIn, _eachCompany, _IE_LocNoticeIn);
+			this.AddCoupling(_CS_MsgBranch, _eachCompany._modelUUID.getUniqID_Batt(), this, this._IE_LocNoticeIn, _eachCompany, _eachCompany._IE_LocNoticeIn);
 			
 			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_DirectFireOut, this, this._OE_DirectFireOut);
 			this.AddCoupling(_CS_Normal, true, _eachCompany, _eachCompany._OE_LocUpdateOut, this, this._OE_LocUpdateOut);
@@ -120,6 +121,7 @@ public class BlueBattalion extends BasicMultiAgentModel {
 			return true;
 		}else {
 			
+			this.updateCouplingState(_CS_Normal, true, true);
 			this.updateCouplingState(_CS_MsgBranch, -1, true);
 			
 			return true;
