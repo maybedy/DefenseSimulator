@@ -17,7 +17,7 @@ CEInfo,BlueCompanyC2,HP,100
 CEInfo,BlueCompanyC2,Movable,FALSE
 CEInfo,BlueCompanyC2,maxSpeed,0
 CEInfo,BlueCompanyC2,detectable,TRUE
-CEInfo,BlueCompanyC2,detectRange,200
+CEInfo,BlueCompanyC2,detectRange,100
 CEInfo,BlueCompanyC2,engageable,TRUE
 CEInfo,BlueCompanyC2,weaponType,BlueDirect
 CEInfo,BlueSensor,HP,0

@@ -265,7 +265,7 @@ public class RedBattalionC2Action extends BasicActionModel {
 					return true;
 				}else {
 					//activated automatically
-					MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, true);
+					MsgOrder _orderMsg =new MsgOrder(OrderType.SpreadOut, this._myUUID, srcUUID, false);
 					ArrayList<MsgOrder> _waitedOrder = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 					_waitedOrder.add(_orderMsg);
 					this.UpdateAWStateValue(_AWS_WaitedOrder, _waitedOrder);

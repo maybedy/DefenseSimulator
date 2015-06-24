@@ -190,6 +190,7 @@ public class DamageAssessment extends BasicActionModel {
 			this.ResetContinue();
 			CEInfo _myinfo = (CEInfo)this.GetConStateValue(_CS_MyInfo);
 			System.out.println("damage assess - " + _myInfo._id.getString());
+			
 			this.UpdateAWStateValue(_AWS_RecentReport, null);
 			ArrayList<MsgDirectFire> _directDmgList = (ArrayList<MsgDirectFire>)this.GetAWStateValue(_AWS_DirectDamageQueue);
 			MsgDirectFire _directFireMsg = (MsgDirectFire)msg.GetValue();

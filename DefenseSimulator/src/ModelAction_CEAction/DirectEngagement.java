@@ -113,7 +113,6 @@ public class DirectEngagement extends BasicActionModel {
 	public boolean Perceive(Message msg) {
 		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MYINFO);
 		if(_myInfo._HP <= 0 ){
-			makeContinue();
 			return true;
 		}
 		if(msg.GetDstEvent() == _IE_OrderIn){

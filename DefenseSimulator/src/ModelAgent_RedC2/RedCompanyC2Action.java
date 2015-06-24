@@ -267,13 +267,23 @@ public class RedCompanyC2Action extends BasicActionModel {
 					
 				}else if(this.GetConStateValue(_CS_Mode)== _MODE.MOVE){
 					//TODO remember last position 
-					CEInfo _newObject;
-					_newObject = _detectedList.remove(0);
-					MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
-					MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, _newDirOrder);
-					this.UpdateAWStateValue(_AWS_FireObject, _newObject);
-					this.UpdateConStateValue(_CS_Mode, _MODE.FIRE);
-					this.addNewOrder(_newOrder);
+
+					CEInfo _newObject = null;
+					for(CEInfo eachInfo : _detectedList){
+						if(eachInfo._HP > 0){
+							_newObject = eachInfo;
+							break;
+						}
+					}
+					if(_newObject == null){
+						makeContinue();
+					}else {
+						MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
+						MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, _newDirOrder);
+						this.UpdateAWStateValue(_AWS_FireObject, _newObject);
+						this.UpdateConStateValue(_CS_Mode, _MODE.FIRE);
+						this.addNewOrder(_newOrder);
+					}
 				}
 				
 				

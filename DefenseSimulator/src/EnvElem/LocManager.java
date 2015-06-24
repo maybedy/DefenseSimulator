@@ -359,8 +359,9 @@ public class LocManager extends BasicEnvElement {
 				deadAgentB++;
 			}
 			
-			Logger.println(_agent_info_b._id.getString());
-			Logger.println(String.valueOf(_agent_info_b._HP));
+			Logger.println("id : " + _agent_info_b._id.getString());
+			Logger.println("HP : " + String.valueOf(_agent_info_b._HP));
+			Logger.println("x : " + _agent_info_b._myLoc.x + ", y : " + _agent_info_b._myLoc.y);
 			
 			_listOfAgents.add(new CEInfo(_agent_info_b));
 		}
@@ -370,9 +371,9 @@ public class LocManager extends BasicEnvElement {
 			if(_agent_info_r._HP <= 0){
 				deadAgentR++;
 			}
-			Logger.println(_agent_info_r._id.getString());
-			Logger.println(String.valueOf(_agent_info_r._HP));
-			
+			Logger.println("id : " + _agent_info_r._id.getString());
+			Logger.println("HP : " + String.valueOf(_agent_info_r._HP));
+			Logger.println("x : " + _agent_info_r._myLoc.x + ", y : " + _agent_info_r._myLoc.y);
 			_listOfAgents.add(new CEInfo(_agent_info_r));
 		}
 		
