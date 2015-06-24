@@ -26,8 +26,6 @@ public class RedCompanyC2Action extends BasicActionModel {
 	public static String _OE_ReportOut = "ReportOut";
 	public static String _OE_OrderOut = "OrderOut";
 	
-	
-	
 	private static String _AS_Action = "Action";
 	private enum _AS{
 		WAIT, PROC
