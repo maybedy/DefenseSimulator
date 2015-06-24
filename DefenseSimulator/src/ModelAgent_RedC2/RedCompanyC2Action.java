@@ -177,6 +177,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 
 	@Override
 	public boolean Perceive(Message msg) {
+		ResetContinue();
 		if(msg.GetDstEvent() == _IE_ReportIn){
 			//immediately process
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
@@ -217,7 +218,20 @@ public class RedCompanyC2Action extends BasicActionModel {
 						if(_currentObj._HP <= 0){
 							//stop fire or next fire
 							///////
-							if(_detectedList.size() <= 1){
+							CEInfo _newObject = null;
+							if(_detectedList.size() <= 0){
+								
+							}else {
+								for(CEInfo eachInfo : _detectedList){
+									if(eachInfo._HP > 0){
+										_newObject = eachInfo;
+										break;
+									}
+								}
+					
+							}
+							
+							if(_newObject == null){
 								MsgOrder _newOrder = new MsgOrder(OrderType.STOP, this._modelUUID, this._modelUUID, null);
 								this.UpdateAWStateValue(_AWS_FireObject, null);
 								this.UpdateConStateValue(_CS_Mode, _MODE.MOVE);
@@ -239,7 +253,6 @@ public class RedCompanyC2Action extends BasicActionModel {
 								
 							}else {
 								this.UpdateConStateValue(_CS_Mode, _MODE.FIRE);
-								CEInfo _newObject = _detectedList.remove(0);
 								MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
 								MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, _newDirOrder);
 								this.UpdateAWStateValue(_AWS_FireObject, _newObject);

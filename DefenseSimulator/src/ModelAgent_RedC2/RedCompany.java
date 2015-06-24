@@ -46,7 +46,6 @@ public class RedCompany extends BasicAgentModel {
 		Movement mvment = new Movement(_myInfo);
 		
 		rCC2.Activated();
-		
 		dmgAss.Activated();
 		detAction.Activated();
 		engment.Activated();

@@ -193,7 +193,7 @@ public class Movement extends BasicActionModel {
 			if(_orderMsg._orderType == OrderType.STOP){
 				
 				this.UpdateAWStateValue(_AWS_CurrentPath, null);
-				
+				ResetContinue();
 				return true;
 				
 			}else if(_orderMsg._orderType == OrderType.Move){
@@ -202,6 +202,7 @@ public class Movement extends BasicActionModel {
 				Path _pathList = _moveOrderMsg.getPath();
 				GridInfo _currCheckpoint = _pathList.removeCurrentObject();
 				
+				ResetContinue();
 				this.UpdateAWStateValue(_AWS_CurrentPath, _pathList);
 				this.updateSpeed(_currCheckpoint);
 				this.updateDirection(_currCheckpoint);

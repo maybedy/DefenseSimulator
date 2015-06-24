@@ -1,5 +1,6 @@
 package SimMain;
 
+import EnvElem.Logger;
 import edu.kaist.seslab.ldef.engine.SimulationEngine;
 import edu.kaist.seslab.ldef.engine.SimulationEngine.LogLevel;
 
@@ -14,6 +15,8 @@ public class main {
 	
 		_outmostABM.initializeScenario();
 		_outmostABM.createModels();
+		
+		Logger.Activated();
 		
 		SimulationEngine se = new SimulationEngine();
 		se.setSystemLog(LogLevel.All);

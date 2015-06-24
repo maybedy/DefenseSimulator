@@ -117,7 +117,7 @@ public class AngleEngagement extends BasicActionModel {
 			this.UpdateAWStateValue(_AWS_Q_AngleOrder, orderList);
 			
 			if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
-				
+				ResetContinue();
 			}else if(this.GetActStateValue(_AS_ACTION)== _AS.Fire){
 				makeContinue();
 			}

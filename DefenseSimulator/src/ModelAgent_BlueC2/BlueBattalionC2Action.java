@@ -127,6 +127,7 @@ public class BlueBattalionC2Action extends BasicActionModel {
 
 	@Override
 	public boolean Perceive(Message msg) {
+		ResetContinue();
 		if(msg.GetDstEvent() == _IE_ReportIn){
 			//immediately process
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();

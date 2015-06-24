@@ -165,10 +165,9 @@ public class BlueCompanyC2Action extends BasicActionModel {
 		if(msg.GetDstEvent() == _IE_ReportIn){
 			//immediately process
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
-			
+			ResetContinue();
 			if(_reportMsg._reportType == ReportType.EnemyInfo){
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.EnemyInfo);
-				
 				
 				MsgLocNotice _locNoticeList = (MsgLocNotice)_reportMsg._msgValue;
 				MsgLocNotice _newLocNotice = new MsgLocNotice(_locNoticeList);
@@ -202,20 +201,32 @@ public class BlueCompanyC2Action extends BasicActionModel {
 						if(_currentObj._HP <= 0){
 							//stop fire or next fire
 							///////
-							if(_detectedList.size() <= 1){
+							CEInfo _newObject = null;
+							if(_detectedList.size() <= 0){
+								
+							}else {
+								for(CEInfo eachInfo : _detectedList){
+									if(eachInfo._HP > 0){
+										_newObject = eachInfo;
+										break;
+									}
+								}
+							}
+							
+							if(_newObject == null){
+
 								MsgOrder _newOrder = new MsgOrder(OrderType.STOP, this._modelUUID, this._modelUUID, null);
 								this.UpdateAWStateValue(_AWS_FireObject, null);
 								this.UpdateConStateValue(_CS_Mode, _MODE.STOP);
 								this.addNewOrder(_newOrder);
-								
-							}else {
-								CEInfo _newObject = _detectedList.remove(0);
+							}
+							else {
 								MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
 								MsgOrder _newOrder = new MsgOrder(OrderType.DirectEngagement, this._modelUUID, this._modelUUID, _newDirOrder);
 								this.UpdateAWStateValue(_AWS_FireObject, _newObject);
+								this.UpdateConStateValue(_CS_Mode, _MODE.FIRE);
 								this.addNewOrder(_newOrder);
 							}
-							
 						}else {
 							//keep fire
 							this.UpdateAWStateValue(_AWS_FireObject, _currentObj);	
@@ -223,6 +234,7 @@ public class BlueCompanyC2Action extends BasicActionModel {
 					}
 					
 				}else if(this.GetConStateValue(_CS_Mode)== _MODE.STOP){
+					
 					CEInfo _newObject;
 					_newObject = _detectedList.remove(0);
 					MsgDirEngOrder _newDirOrder =new MsgDirEngOrder(_newObject);
@@ -235,6 +247,7 @@ public class BlueCompanyC2Action extends BasicActionModel {
 				
 				
 			}else if(_reportMsg._reportType == ReportType.LocationChange){
+				ResetContinue();
 				//don't have to report upper model
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
@@ -247,6 +260,7 @@ public class BlueCompanyC2Action extends BasicActionModel {
 				////////done 
 			}
 			else if(_reportMsg._reportType == ReportType.Assessment){
+				ResetContinue();
 				//don't have to report upper model
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.Assessment);
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;

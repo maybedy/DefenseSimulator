@@ -62,12 +62,14 @@ public class DirectEngagement extends BasicActionModel {
 			return true;
 		}else if(this.GetActStateValue(_AS_ACTION) == _AS.Fire){
 			// TODO msg generating
+			
 			CEInfo _enemyInfo = (CEInfo)this.GetAWStateValue(_AWS_DETECTED_ENEMY);
 			CEInfo _myInfo = (CEInfo)this.GetConStateValue(_CS_MYINFO);
+			System.out.println("Direct Fire - " + _myInfo._id.getString());
 			WTTypeDirectParam _myParam = (WTTypeDirectParam)_myInfo._weaponParam;
 			MsgDirectFire _dirFireMsg = null;
 			
-			_dirFireMsg = new MsgDirectFire(_enemyInfo, _myParam);
+			_dirFireMsg = new MsgDirectFire(_enemyInfo, _myParam, _myInfo._HP);
 			msg.SetValue(_OE_DirectFireOut, _dirFireMsg);
 			return true;
 		}
@@ -126,6 +128,8 @@ public class DirectEngagement extends BasicActionModel {
 				this.UpdateAWStateValue(_AWS_DETECTED_ENEMY, null);
 			}
 			
+			ResetContinue();
+			
 			return true;	
 		}else if(msg.GetDstEvent() == _IE_MyInfoIn){
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
@@ -133,7 +137,6 @@ public class DirectEngagement extends BasicActionModel {
 			
 			this.UpdateConStateValue(_CS_MYINFO, _locUpdateMsg._myInfo);
 			if(_locUpdateMsg._myInfo._HP <= 0){
-				
 			}else {
 				makeContinue();	
 			}

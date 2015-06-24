@@ -86,6 +86,7 @@ public class DmgManager extends BasicEnvElement {
 	
 	@Override
 	public boolean Delta(Message msg) {
+		ResetContinue();
 		if(msg.GetDstEvent() == _IE_AngFire) {
 			double _currentTime = msg.GetTime();
 			double _lastTime = (double)this.GetStateValue(_ST_SimTime);
@@ -298,7 +299,7 @@ public class DmgManager extends BasicEnvElement {
 			double _dist = _eachAgent._myLoc.distance(_impactLoc);
 			
 			if(_dist <= _fireRange) {
-				MsgAngleDmg _newDmg = new MsgAngleDmg(_eachAgent._id);
+				MsgAngleDmg _newDmg = new MsgAngleDmg(_eachAgent._id, _msgAngleFire._angleFireParam);
 				_listOfDmg.add(_newDmg);
 			}
 		}

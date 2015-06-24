@@ -105,6 +105,8 @@ public class Detection extends BasicActionModel {
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
 			MsgLocNotice _locNotice = (MsgLocNotice)_reportMsg._msgValue;
 			
+			ResetContinue();
+			
 			this.UpdateAWStateValue(_AWS_DetectedList, _locNotice);
 			
 			return true;
@@ -114,7 +116,7 @@ public class Detection extends BasicActionModel {
 			
 			this.UpdateConStateValue(_CS_MyInfo, _locMsg._myInfo);
 			if(_locMsg._myInfo._HP <= 0){
-				
+				ResetContinue();
 			}else {
 				makeContinue();	
 			}

@@ -94,14 +94,32 @@ public class CEInfo {
 	
 	public double applyAssessment(MsgAngleDmg _msgAngleDmg){
 		//TODO change dmg assessment function
-		double _newHP = _HP;
+		double _rand = Math.random();
+		double _damage;
+		if(_rand >= 0.5){
+			double _power = _msgAngleDmg._angleFireParam._power;
+			_damage= _power;
+		}else {
+			_damage = 0;
+			
+		}
+		double _newHP = _HP- _damage;
+		
+		
 		
 		return _newHP;
 	}
 
 	public double applyAssessment(MsgDirectFire _msgDirectFire){
 		//TODO change dmg assessment function
-		double _newHP = _HP;
+		double _power = _msgDirectFire._myDirectParam._power;
+		double _hp = _msgDirectFire._currentHP;
+		double _damage = _power * _hp;
+		
+		double _newHP = _HP - _damage;
+		
+		
+		
 		
 		return _newHP;
 	}

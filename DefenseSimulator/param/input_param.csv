@@ -6,7 +6,7 @@ General Information,Simulation Params,Simulation Endtime,30000
 General Information,Simulation Params,OSM file,map
 General Information,Simulation Params,GridInfoFile,grid_obstacle.csv
 General Information,Simulation Params,AgentLocFile,agentLoc.csv
-CEInfo,BlueBattalionC2,HP,10000
+CEInfo,BlueBattalionC2,HP,0
 CEInfo,BlueBattalionC2,Movable,FALSE
 CEInfo,BlueBattalionC2,maxSpeed,0
 CEInfo,BlueBattalionC2,detectable,FALSE
@@ -20,21 +20,21 @@ CEInfo,BlueCompanyC2,detectable,TRUE
 CEInfo,BlueCompanyC2,detectRange,200
 CEInfo,BlueCompanyC2,engageable,TRUE
 CEInfo,BlueCompanyC2,weaponType,BlueDirect
-CEInfo,BlueSensor,HP,100
+CEInfo,BlueSensor,HP,0
 CEInfo,BlueSensor,Movable,FALSE
 CEInfo,BlueSensor,maxSpeed,0
 CEInfo,BlueSensor,detectable,TRUE
 CEInfo,BlueSensor,detectRange,200
 CEInfo,BlueSensor,engageable,FALSE
 CEInfo,BlueSensor,weaponType,NONE
-CEInfo,BlueShooter,HP,500
+CEInfo,BlueShooter,HP,0
 CEInfo,BlueShooter,Movable,FALSE
 CEInfo,BlueShooter,maxSpeed,0
 CEInfo,BlueShooter,detectable,FALSE
 CEInfo,BlueShooter,detectRange,0
 CEInfo,BlueShooter,engageable,TRUE
 CEInfo,BlueShooter,weaponType,BlueAngle
-CEInfo,RedBattalionC2,HP,10000
+CEInfo,RedBattalionC2,HP,0
 CEInfo,RedBattalionC2,Movable,FALSE
 CEInfo,RedBattalionC2,maxSpeed,0
 CEInfo,RedBattalionC2,detectable,FALSE
