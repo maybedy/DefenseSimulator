@@ -71,10 +71,21 @@ public class Detection extends BasicActionModel {
 
 	@Override
 	public boolean Decide() {
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			this._isContinuable = false;
+			ResetContinue();
+			this.UpdateActStateValue(_AS_Action, _ActState.Stop);
+			return true;
+		}
 		if(this.GetActStateValue(_AS_Action) == _ActState.Stop){
+			this._isContinuable = false;
+			ResetContinue();
 			this.UpdateActStateValue(_AS_Action, _ActState.Report);
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _ActState.Report){
+			this._isContinuable = false;
+			ResetContinue();
 			this.UpdateActStateValue(_AS_Action, _ActState.Stop);
 			return true;
 		}
@@ -83,6 +94,11 @@ public class Detection extends BasicActionModel {
 
 	@Override
 	public boolean Perceive(Message msg) {
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			Continue();
+			return true;
+		}
 		if(msg.GetDstEvent() == _IE_LocNoticeIn){// from env, info of nearby agents
 			
 			System.out.println("Detection activated - " + this._modelID.getString());
@@ -97,7 +113,12 @@ public class Detection extends BasicActionModel {
 			MsgLocUpdate _locMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			
 			this.UpdateConStateValue(_CS_MyInfo, _locMsg._myInfo);
-			Continue();
+			if(_locMsg._myInfo._HP <= 0){
+				
+			}else {
+				makeContinue();	
+			}
+			
 			return true;
 		}
 		return false;
@@ -112,6 +133,15 @@ public class Detection extends BasicActionModel {
 			return 0;
 		}
 		return 0;
+	}
+	
+
+	public void makeContinue(){
+		if(this._isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
 	}
 
 }

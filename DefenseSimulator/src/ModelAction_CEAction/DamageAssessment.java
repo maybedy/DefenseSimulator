@@ -113,6 +113,14 @@ public class DamageAssessment extends BasicActionModel {
 	
 	@Override
 	public boolean Decide() {
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			this._isContinuable = false;
+			ResetContinue();
+			this.UpdateActStateValue(_AS_Action, _ActState.Stop);
+			return true;
+		}
+		
 		if(this.GetAWStateValue(_AWS_RecentReport) != null){
 			this.makeContinue();
 			return true;
@@ -146,7 +154,11 @@ public class DamageAssessment extends BasicActionModel {
 
 	@Override
 	public boolean Perceive(Message msg) {
-		
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			makeContinue();
+			return true;
+		}
 		if(msg.GetDstEvent() == _IE_AngleDmgIn){
 			this.UpdateAWStateValue(_AWS_RecentReport, null);
 			ArrayList<MsgAngleDmg> _angleDmgList = (ArrayList<MsgAngleDmg>)this.GetAWStateValue(_AWS_AngleDamageQueue);

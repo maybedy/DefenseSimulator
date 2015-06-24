@@ -24,6 +24,8 @@ public class BlueCompanyC2Action extends BasicActionModel {
 	private enum _AS{
 		WAIT, PROC
 	}
+	
+	
 
 	private static String _CS_ShootCount = "ShootCount";
 	private static String _CS_Mode = "Mode";
@@ -39,9 +41,10 @@ public class BlueCompanyC2Action extends BasicActionModel {
 	private static String _AWS_RecentReport = "RecentReport";
 	
 	private static String _AWS_MyInfo = "MyInfo";
+	private boolean _isContinuable = true;
+	
 	
 	public UUID _modelUUID;
-	public UUID _upperUUID;
 	
 	
 	public BlueCompanyC2Action(CEInfo _myInfo) {
@@ -103,33 +106,46 @@ public class BlueCompanyC2Action extends BasicActionModel {
 
 	@Override
 	public boolean Decide() {
+		CEInfo _myInfo = (CEInfo) this.GetAWStateValue(_AWS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			this._isContinuable = false;
+			ResetContinue();
+			this.UpdateActStateValue(_AS_Action, _AS.WAIT);
+			return true;
+		}
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
+				this._isContinuable = false;
+				ResetContinue();
 				this.UpdateActStateValue(_AS_Action, _AS.PROC);
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				Continue();
+				makeContinue();
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
-				Continue();
+				makeContinue();
 			}
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
-				Continue();
+				makeContinue();
 			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				Continue();
+				makeContinue();
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
-				Continue();
+				makeContinue();
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == null){
 				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 				ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
 				if(_orderList.isEmpty() && _reportList.isEmpty()){
+					this._isContinuable = false;
+					ResetContinue();
 					this.UpdateActStateValue(_AS_Action, _AS.WAIT);
 					
 				}else {
+					this._isContinuable = false;
+					ResetContinue();
 					this.UpdateActStateValue(_AS_Action, _AS.PROC);
 				}
 				
@@ -141,6 +157,11 @@ public class BlueCompanyC2Action extends BasicActionModel {
 
 	@Override
 	public boolean Perceive(Message msg) {
+		CEInfo _myInfo = (CEInfo) this.GetAWStateValue(_AWS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			Continue();
+			return true;
+		}
 		if(msg.GetDstEvent() == _IE_ReportIn){
 			//immediately process
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
@@ -157,7 +178,7 @@ public class BlueCompanyC2Action extends BasicActionModel {
 				ArrayList<CEInfo> _detectedList = _locNoticeList.GetNearByList();
 				
 				if(_detectedList.isEmpty()){
-					Continue();
+					makeContinue();
 					return true;
 				}
 				
@@ -173,7 +194,7 @@ public class BlueCompanyC2Action extends BasicActionModel {
 					}
 					
 					if(_currentObj == null){
-						Continue();
+						makeContinue();
 						return true;
 					}else {
 						_detectedList.remove(_currentObj);
@@ -218,9 +239,11 @@ public class BlueCompanyC2Action extends BasicActionModel {
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
 				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
-				
-				Continue();
-				
+				if(_locUpdate._myInfo._HP <= 0){
+					
+				}else {
+					makeContinue();	
+				}
 				////////done 
 			}
 			else if(_reportMsg._reportType == ReportType.Assessment){
@@ -228,9 +251,11 @@ public class BlueCompanyC2Action extends BasicActionModel {
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.Assessment);
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
 				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
-				
-				Continue();
-				
+				if(_locUpdate._myInfo._HP <= 0){
+					
+				}else {
+					makeContinue();	
+				}
 				///////done 
 			}
 			return true;
@@ -240,6 +265,7 @@ public class BlueCompanyC2Action extends BasicActionModel {
 
 	@Override
 	public double TimeAdvance() {
+		this._isContinuable = true;
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			return Double.POSITIVE_INFINITY;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
@@ -262,6 +288,15 @@ public class BlueCompanyC2Action extends BasicActionModel {
 		this.UpdateAWStateValue(_AWS_WaitedReport, _reportList);
 		
 		
+	}
+	
+
+	public void makeContinue(){
+		if(this._isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
 	}
 	
 }

@@ -35,6 +35,8 @@ public class BlueBattalionC2Action extends BasicActionModel {
 		WAIT, PROC
 	}
 	
+	private boolean _isContinuable = true;
+	
 	public UUID _modelUUID;
 
 
@@ -91,23 +93,29 @@ public class BlueBattalionC2Action extends BasicActionModel {
 			ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 			if(_orderList.isEmpty()){
 				//TODO Continue();
-				
+				makeContinue();
 			}else {
+				this._isContinuable = false;
+				ResetContinue();
 				this.UpdateActStateValue(_AS_Action, _AS.PROC);
 			}
 			return true;
 
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
-				Continue();
+				makeContinue();
 			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				Continue();
+				makeContinue();
 			}else if(this.GetAWStateValue(_AWS_RecentReport) == null){
 				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 				if(_orderList.isEmpty()){
+					this._isContinuable = false;
+					ResetContinue();
 					this.UpdateActStateValue(_AS_Action, _AS.WAIT);
 					
 				}else {
+					this._isContinuable = false;
+					ResetContinue();
 					this.UpdateActStateValue(_AS_Action, _AS.PROC);
 				}
 				
@@ -141,12 +149,12 @@ public class BlueBattalionC2Action extends BasicActionModel {
 				//don't have to consider
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
 				
-				Continue();
+				makeContinue();
 			}else if(_reportMsg._reportType == ReportType.Assessment){
 				//don't have to consider
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.Assessment);
 				
-				Continue();
+				makeContinue();
 			}
 			return true;
 			
@@ -156,6 +164,7 @@ public class BlueBattalionC2Action extends BasicActionModel {
 
 	@Override
 	public double TimeAdvance() {
+		this._isContinuable = true;
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			return Double.POSITIVE_INFINITY;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
@@ -196,6 +205,14 @@ public class BlueBattalionC2Action extends BasicActionModel {
 		
 		this.UpdateConStateValue(_CS_ShootCount, _shootCnt);
 		return _orderList;
+	}
+	
+	public void makeContinue(){
+		if(this._isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
 	}
 
 }

@@ -111,17 +111,24 @@ public class RedCompanyC2Action extends BasicActionModel {
 
 	@Override
 	public boolean Decide() {
+		CEInfo _myInfo = (CEInfo) this.GetAWStateValue(_AWS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			this.isContinuable = false;
+			ResetContinue();
+			this.UpdateActStateValue(_AS_Action, _AS.WAIT);
+			return true;
+		}
 		if(this.GetActStateValue(_AS_Action) == _AS.WAIT){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
+				this.isContinuable = false;
+				ResetContinue();
 				this.UpdateActStateValue(_AS_Action, _AS.PROC);
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				if(this.isContinuable)
-					Continue();
+				makeContinue();
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
-				if(this.isContinuable)
-					Continue();
+				makeContinue();
 			}else {
 				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
 				ArrayList<MsgReport> _reportList = (ArrayList<MsgReport>)this.GetAWStateValue(_AWS_WaitedReport);
@@ -141,15 +148,12 @@ public class RedCompanyC2Action extends BasicActionModel {
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.PROC){
 			if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.EnemyInfo){
-				if(this.isContinuable)
-					Continue();
+				makeContinue();
 			}else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.LocationChange){
-				if(this.isContinuable)
-					Continue();
+				makeContinue();
 			}
 			else if(this.GetAWStateValue(_AWS_RecentReport) == ReportType.Assessment){
-				if(this.isContinuable)
-					Continue();
+				makeContinue();
 			}
 			else {
 				ArrayList<MsgOrder> _orderList = (ArrayList<MsgOrder>)this.GetAWStateValue(_AWS_WaitedOrder);
@@ -189,8 +193,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 				ArrayList<CEInfo> _detectedList = _locNoticeList.GetNearByList();
 				
 				if(_detectedList.isEmpty()){
-					if(this.isContinuable)
-						Continue();
+					makeContinue();
 					return true;
 				}
 				
@@ -206,8 +209,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 					}
 					
 					if(_currentObj == null){
-						if(this.isContinuable)
-							Continue();
+						makeContinue();
 						return true;
 					}else {
 						_detectedList.remove(_currentObj);
@@ -267,10 +269,11 @@ public class RedCompanyC2Action extends BasicActionModel {
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.LocationChange);
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
 				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
-				
-				if(this.isContinuable)
-					Continue();
-				
+				if(_locUpdate._myInfo._HP <= 0){
+					
+				}else {
+					makeContinue();	
+				}
 				////////done 
 			}
 			else if(_reportMsg._reportType == ReportType.Assessment){
@@ -278,10 +281,11 @@ public class RedCompanyC2Action extends BasicActionModel {
 				this.UpdateAWStateValue(_AWS_RecentReport, ReportType.Assessment);
 				MsgLocUpdate _locUpdate = (MsgLocUpdate)_reportMsg._msgValue;
 				this.UpdateAWStateValue(_AWS_MyInfo, new CEInfo(_locUpdate._myInfo));
-				
-				if(this.isContinuable)
-					Continue();
-				
+				if(_locUpdate._myInfo._HP <= 0){
+					
+				}else {
+					makeContinue();	
+				}
 				///////done 
 			}
 			
@@ -307,8 +311,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 				
 				if((boolean)_orderMsg._orderMsg == true){
 					//emergency status, automatically activate
-					if(this.isContinuable)
-						Continue();
+					makeContinue();
 				}else {
 					// not emergency status
 					this.UpdateConStateValue(_CS_Mode, _MODE.MOVE);
@@ -361,6 +364,15 @@ public class RedCompanyC2Action extends BasicActionModel {
 		this.UpdateAWStateValue(_AWS_WaitedReport, _reportList);
 		
 		
+	}
+	
+
+	public void makeContinue(){
+		if(this.isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
 	}
 	
 //	

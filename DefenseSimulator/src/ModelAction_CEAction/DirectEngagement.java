@@ -1,9 +1,7 @@
 package ModelAction_CEAction;
 
 import CommonInfo.CEInfo;
-import CommonInfo.DmgState;
 import CommonInfo.UUID;
-import CommonType.WTType;
 import CommonType.WTTypeDirectParam;
 import MsgC2Order.MsgDirEngOrder;
 import MsgC2Order.MsgOrder;
@@ -49,6 +47,7 @@ public class DirectEngagement extends BasicActionModel {
 		this._id = _myInfo._id;
 		
 		AddAwState(_AWS_DETECTED_ENEMY, null, true, STATETYPE_OBJECT);
+		AddAwState(_AWS_CurrentMission, null);
 		
 		AddConState(_CS_MYINFO, _myInfo, true, STATETYPE_OBJECT);
 		
@@ -78,6 +77,13 @@ public class DirectEngagement extends BasicActionModel {
 
 	@Override
 	public boolean Decide() {
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MYINFO);
+		if(_myInfo._HP <= 0 ){
+			this._isContinuable = false;
+			ResetContinue();
+			this.UpdateActStateValue(_AS_ACTION, _AS.Stop);
+			return true;
+		}
 		if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
 			this._isContinuable = false;
 			ResetContinue();
@@ -103,6 +109,11 @@ public class DirectEngagement extends BasicActionModel {
 
 	@Override
 	public boolean Perceive(Message msg) {
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MYINFO);
+		if(_myInfo._HP <= 0 ){
+			makeContinue();
+			return true;
+		}
 		if(msg.GetDstEvent() == _IE_OrderIn){
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
 			
@@ -121,8 +132,11 @@ public class DirectEngagement extends BasicActionModel {
 			MsgLocUpdate _locUpdateMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			
 			this.UpdateConStateValue(_CS_MYINFO, _locUpdateMsg._myInfo);
-			
-			makeContinue();
+			if(_locUpdateMsg._myInfo._HP <= 0){
+				
+			}else {
+				makeContinue();	
+			}
 			return true;
 		}
 		

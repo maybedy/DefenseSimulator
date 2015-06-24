@@ -23,6 +23,7 @@ public class LocManager extends BasicEnvElement {
 	public static String _OE_LocNoticeOutB = "LocNoticeOut_B";
 	public static String _OE_LocNoticeOutR = "LocNoticeOut_R";
 	
+	public static String _OE_dummy = "dummy";
 	
 	protected String _ST_Act = "ActState";
 	protected enum ActState{
@@ -35,6 +36,8 @@ public class LocManager extends BasicEnvElement {
 	protected String _ST_ListOfAgents_R = "ListOfAgents_R";
 	
 	protected String _ST_ListOfMsgLocNotice = "ListOfMsgLocNotice";
+	
+	private boolean _isContinuable = true;
 	
 	public LocManager(ArrayList<CEInfo> _listOfAgents_B, ArrayList<CEInfo> _listOfAgents_R) //input parameters for constructor :: List of CEInfo  
 	{
@@ -71,13 +74,14 @@ public class LocManager extends BasicEnvElement {
 	@Override
 	public boolean Delta(Message msg) {
 		if(msg.GetDstEvent() == _IE_LocUpdate) {
+			System.out.println("input locupdate");
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
 			
 			MsgLocUpdate _msg_locupdate = (MsgLocUpdate)_reportMsg._msgValue;
 			CEInfo _agent_info = new CEInfo(_msg_locupdate.GetMyInfo()); //cloning
 			
 			this.UpdateAgentLocation(_agent_info);
-			Continue();
+			makeContinue();
 			return true;
 		}
 		if(this.GetStateValue(_ST_Act) == ActState.TICK){
@@ -85,19 +89,29 @@ public class LocManager extends BasicEnvElement {
 			/*
 			 * state transition
 			 */
+			this._isContinuable = false;
+			ResetContinue();
+			System.out.println("Delta - tick");
 			this.UpdateStateValue(_ST_Act, ActState.SEND);
 				
 			
 			return true;
 		}else if(this.GetStateValue(_ST_Act) == ActState.SEND){
+			System.out.println("Delta - send");
 			ArrayList<MsgReport> _listOfMsgLocNotice = 
 					(ArrayList<MsgReport>)this.GetStateValue(_ST_ListOfMsgLocNotice);
 			
-			if(_listOfMsgLocNotice.isEmpty()){
+			if(_listOfMsgLocNotice.isEmpty() || _listOfMsgLocNotice == null){
 				//nothing to send
-				//System.out.println("No msg left");
+				System.out.println("No msg left");
+				this._isContinuable = false;
+				ResetContinue();
+				System.out.println("Delta - update to tick");
 				this.UpdateStateValue(_ST_Act, ActState.TICK);
 			}else {
+				this._isContinuable = false;
+				ResetContinue();
+				System.out.println("Delta - update to send");
 				this.UpdateStateValue(_ST_Act, ActState.SEND);	
 			}
 			
@@ -122,6 +136,7 @@ public class LocManager extends BasicEnvElement {
 	public boolean Output(Message msg) {
 		// msg need dst, src model to notify its destination(for dynamic structure)
 		if(this.GetStateValue(_ST_Act) == ActState.TICK){
+			System.out.println("Output- tick");
 			//nothing to send, but makes LocNotice messages for all agents			
 			
 			/*
@@ -147,11 +162,18 @@ public class LocManager extends BasicEnvElement {
 			//this.updateLogInfo();
 			return true;
 		}else if(this.GetStateValue(_ST_Act) == ActState.SEND){
+			System.out.println("Output- send");
 			ArrayList<MsgReport> _listOfMsgLocNotice = 
 					(ArrayList<MsgReport>)this.GetStateValue(_ST_ListOfMsgLocNotice);
 			
-			if(_listOfMsgLocNotice.isEmpty()){
+			if(_listOfMsgLocNotice.isEmpty() || _listOfMsgLocNotice == null){
 				System.out.println("No msg left");
+				msg.SetValue(_OE_dummy, null);
+				
+//				this._isContinuable = false;
+//				ResetContinue();
+//				System.out.println("output - update to tick");
+//				this.UpdateStateValue(_ST_Act, ActState.TICK);				
 			}else {
 				MsgReport _sendingMsg = _listOfMsgLocNotice.remove(0);
 				
@@ -175,10 +197,13 @@ public class LocManager extends BasicEnvElement {
 	@Override
 	public double TimeAdvance() {
 		// TODO Auto-generated method stub
+		
+		this._isContinuable = true;
 		if(this.GetStateValue(_ST_Act) == ActState.TICK){
-//			/double ta = (double)this.GetStateValue(_ST_Tick);
+			System.out.println("TA called - tick");
 			return 1;
 		}else if(this.GetStateValue(_ST_Act) == ActState.SEND){
+			System.out.println("TA called - send");
 			return 0;
 		}
 		return Double.POSITIVE_INFINITY;
@@ -237,6 +262,10 @@ public class LocManager extends BasicEnvElement {
 			//if( _other_agent._state == DmgState.Destroyed ){
 		//		continue; // sjkwon
 		//	}
+			
+			if(_other_agent._HP <= 0){
+				continue;
+			}
 		
 			XY _nearPoint = _other_agent._myLoc;
 			double _dist = _originalPoint.distance(_nearPoint);
@@ -266,6 +295,9 @@ public class LocManager extends BasicEnvElement {
 			
 			_sendingMsg = new MsgLocNotice();
 			_listToSend = GetNearByAgents(_agent_info_b, _listOfAgents_R);
+			if(_listToSend.isEmpty() || _listToSend == null){
+				continue;
+			}
 			_sendingMsg.SetNearByList(_listToSend);
 			_reportMsg = new MsgReport(ReportType.EnemyInfo, null, _agent_info_b._id, _sendingMsg);
 
@@ -284,6 +316,9 @@ public class LocManager extends BasicEnvElement {
 			
 			_sendingMsg = new MsgLocNotice();
 			_listToSend = GetNearByAgents(_agent_info_r, _listOfAgents_B);
+			if(_listToSend.isEmpty() || _listToSend == null){
+				continue;
+			}
 			_sendingMsg.SetNearByList(_listToSend);
 			_reportMsg = new MsgReport(ReportType.EnemyInfo, null, _agent_info_r._id, _sendingMsg);
 
@@ -369,5 +404,14 @@ public class LocManager extends BasicEnvElement {
 			if( _agent_info._HP > 0) count++;
 		}
 		return count;
+	}
+	
+
+	public void makeContinue(){
+		if(this._isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
 	}
 }

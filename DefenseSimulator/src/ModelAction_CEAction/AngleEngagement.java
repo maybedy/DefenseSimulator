@@ -30,7 +30,7 @@ public class AngleEngagement extends BasicActionModel {
 	
 	private static String _CS_MYINFO = "MyInfo";
 		
-	
+	private boolean _isContinuable = true;
 	private String _AS_ACTION = "Action";
 	private enum _AS{ 
 		Stop, Fire
@@ -87,6 +87,8 @@ public class AngleEngagement extends BasicActionModel {
 
 	@Override
 	public boolean Decide() {
+		this._isContinuable = false;
+		ResetContinue();
 		if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
 			this.UpdateActStateValue(_AS_ACTION, _AS.Fire);
 			return true;
@@ -117,7 +119,7 @@ public class AngleEngagement extends BasicActionModel {
 			if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
 				
 			}else if(this.GetActStateValue(_AS_ACTION)== _AS.Fire){
-				Continue();
+				makeContinue();
 			}
 			return true;	
 		}else if(msg.GetDstEvent() == _IE_MyInfoIn){
@@ -126,7 +128,7 @@ public class AngleEngagement extends BasicActionModel {
 			MsgLocUpdate _locMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			
 			this.UpdateConStateValue(_CS_MYINFO, _locMsg._myInfo);
-			Continue();
+			makeContinue();
 			return true;
 		}
 		return false;
@@ -134,12 +136,23 @@ public class AngleEngagement extends BasicActionModel {
 
 	@Override
 	public double TimeAdvance() {
+		this._isContinuable = true;
 		if(this.GetActStateValue(_AS_ACTION) == _AS.Stop){
 			return Double.POSITIVE_INFINITY;
 		}else if(this.GetActStateValue(_AS_ACTION) == _AS.Fire){
 			return 0;
 		}
 		return 0;
+	}
+	
+
+
+	public void makeContinue(){
+		if(this._isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
 	}
 
 }

@@ -28,6 +28,7 @@ public class Movement extends BasicActionModel {
 	private static String _AWS_CurrentPath = "CurrentPath"; // ArrayList<XY> 
 	
 	private static String _AS_Action = "Action";
+	private boolean _isContinuable = true;
 	
 	public UUID _modelUUID;
 	
@@ -143,11 +144,22 @@ public class Movement extends BasicActionModel {
 
 	@Override
 	public boolean Decide() {
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			this._isContinuable = false;
+			ResetContinue();
+			this.UpdateActStateValue(_AS_Action, _AS.Stop);
+			return true;
+		}
 		if(this.GetActStateValue(_AS_Action) == _AS.Stop){
+			this._isContinuable = false;
+			ResetContinue();
 			this.UpdateActStateValue(_AS_Action, _AS.Move);
 			return true;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.Move){
 			Path _currentPath = (Path)this.GetAWStateValue(_AWS_CurrentPath);
+			this._isContinuable = false;
+			ResetContinue();
 			if(_currentPath == null || _currentPath.isEmpty()){
 				this.UpdateActStateValue(_AS_Action, _AS.Stop);	
 			}else {
@@ -161,13 +173,20 @@ public class Movement extends BasicActionModel {
 
 	@Override
 	public boolean Perceive(Message msg) {
+		CEInfo _myInfo = (CEInfo) this.GetConStateValue(_CS_MyInfo);
+		if(_myInfo._HP <= 0 ){
+			Continue();
+			return true;
+		}
 		if(msg.GetDstEvent() == _IE_MyInfo){
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
 			MsgLocUpdate _myInfoMsg = (MsgLocUpdate)_reportMsg._msgValue;
 			this.UpdateConStateValue(_CS_MyInfo, _myInfoMsg._myInfo);
-			
-			Continue();
-			
+			if(_myInfoMsg._myInfo._HP <= 0){
+				
+			}else {
+				makeContinue();	
+			}
 			return true;
 		}else if(msg.GetDstEvent() == _IE_OrderIn){
 			MsgOrder _orderMsg = (MsgOrder)msg.GetValue();
@@ -222,12 +241,21 @@ public class Movement extends BasicActionModel {
 
 	@Override
 	public double TimeAdvance() {
+		this._isContinuable = true;
 		if(this.GetActStateValue(_AS_Action) == _AS.Stop){
 			return Double.POSITIVE_INFINITY;
 		}else if(this.GetActStateValue(_AS_Action) == _AS.Move){
 			return 1;
 		}
 		return 0;
+	}
+
+	public void makeContinue(){
+		if(this._isContinuable){
+			Continue();
+		}else {
+			ResetContinue();
+		}
 	}
 
 }

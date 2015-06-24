@@ -292,7 +292,7 @@ public class DmgManager extends BasicEnvElement {
 		XY _impactLoc = _msgAngleFire._impactLoc;
 
 		for(CEInfo _eachAgent : _listOfAgents){
-			
+			if(_eachAgent._id._side == UUIDSideType.Blue) continue;
 			if( _eachAgent._HP <= 0) continue;
 			
 			double _dist = _eachAgent._myLoc.distance(_impactLoc);

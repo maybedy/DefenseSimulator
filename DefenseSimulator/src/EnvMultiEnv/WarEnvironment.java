@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import CommonInfo.CEInfo;
 import EnvElem.DmgManager;
+import EnvElem.DummyModel;
 import EnvElem.LocManager;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicEnvModel;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
@@ -36,6 +37,7 @@ public class WarEnvironment extends BasicEnvModel {
 		
 		AddCouplingState(_CS_Normal, true);
 		
+		DummyModel _dummy = new DummyModel();
 		LocManager locMgr = new LocManager(_listOfAgents_B, _listOfAgents_R);
 		DmgManager dmgMgr = new DmgManager();
 		locMgr.Activated();
@@ -55,6 +57,7 @@ public class WarEnvironment extends BasicEnvModel {
 		//TODO add internal changes
 		AddCoupling(_CS_Normal, true, locMgr, locMgr._OE_LocUpdate, dmgMgr, dmgMgr._IE_LocUpdate);
 		
+		AddCoupling(_CS_Normal, true, locMgr, locMgr._OE_dummy, _dummy, _dummy._IE_input);
 		
 	}
 
