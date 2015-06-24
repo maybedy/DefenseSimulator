@@ -4,7 +4,7 @@ import CommonInfo.XY;
 
 public class GridInfo {
 	
-	public static double _r = 10;
+	public static double _r = 125/2/Math.sqrt(3);
 	public static int _totalNumGrid=0;
 	
 	

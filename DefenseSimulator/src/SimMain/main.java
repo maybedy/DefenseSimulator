@@ -17,7 +17,7 @@ public class main {
 		
 		SimulationEngine se = new SimulationEngine();
 		se.setSystemLog(LogLevel.None);
-		se.setEndtime(30000);
+		se.setEndtime(100000);
 		se.LoadModel(_outmostABM);
 		se.SimulationStart();
 	}

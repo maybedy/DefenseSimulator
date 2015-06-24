@@ -139,4 +139,20 @@ public class XY {
 		return "(" + x + ", " + y + ")";
 	}
 
+	
+	public XY calEndPointObj(XY obj, double speed){
+		// speed in m / s;
+		
+		double dx = obj.x - this.x;
+		double dy = obj.y - this.y;
+		double dist = obj.distance(this);
+		double dt = dist / speed;
+		
+		double r_dx = dx/ dt;
+		double r_dy = dy/ dt;
+		
+		XY _ret = new XY(x + r_dx, y + r_dy);
+		
+		return _ret;
+	}
 }

@@ -54,6 +54,8 @@ public class PathFinder {
 					break;
 				}
 			}
+			_grid = _nextGrid;
+			
 		}
 		
 		

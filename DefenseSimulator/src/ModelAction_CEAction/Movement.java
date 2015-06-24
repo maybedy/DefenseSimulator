@@ -66,9 +66,18 @@ public class Movement extends BasicActionModel {
 	
 	private XY UpdateMyLoc(XY currentLoc, double direction, double speed, XY _currCheckpoint) {
 		// TODO update new loc
-		XY ret = currentLoc.calEndPoint(speed, direction);
 		
-		System.out.println(_modelUUID.getString() + " - " + currentLoc.x + ", " + currentLoc.y);
+		if(currentLoc.equalsWithError(_currCheckpoint)){
+			return _currCheckpoint;
+		}
+		if(speed * 1000/3600 > currentLoc.distance(_currCheckpoint)){
+			return _currCheckpoint;
+		}else {
+			
+		}
+		XY ret = currentLoc.calEndPointObj(_currCheckpoint, speed*1000/3600);	
+		
+		System.out.println(_modelUUID.getString() + " - " + ret.x + ", " + ret.y);
 		
 		return ret;
 	}
@@ -98,7 +107,7 @@ public class Movement extends BasicActionModel {
 			CEInfo _newInfo = new CEInfo(_currInfo);
 			_newInfo._myLoc = _newLoc;
 			
-			if(_currCheckpoint.isInThisGrid(_newLoc)){
+			if(_currCheckpoint.isInThisGrid(_newLoc) && _newInfo._currentGrid._gridIndex != _currCheckpoint._gridIndex){
 				//TODO make calculating speed in the Grid
 				this.updateSpeed(_currCheckpoint);
 				_newInfo._currentGrid = _currCheckpoint;
