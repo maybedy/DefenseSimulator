@@ -77,6 +77,7 @@ public class RedCompanyC2Action extends BasicActionModel {
 		AddAwState(_AWS_WaitedReport, new ArrayList<MsgReport>());
 		AddAwState(_AWS_RecentReport, null);
 		AddAwState(_AWS_FireObject, null);
+		AddAwState(_AWS_MyInfo, _myInfo);
 	}
 
 	@Override

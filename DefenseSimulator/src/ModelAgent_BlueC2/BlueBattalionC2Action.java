@@ -183,12 +183,10 @@ public class BlueBattalionC2Action extends BasicActionModel {
 		
 		int _shootCnt = (int)this.GetConStateValue(_CS_ShootCount);
 		int _numShooter = (int)this.GetConStateValue(_CS_NumShooter);
-		ArrayList<CEInfo> _companyList = (ArrayList<CEInfo>)this.GetConStateValue(_CS_CompanyList);
+		ArrayList<Shooter> _shooterList = (ArrayList<Shooter>)this.GetConStateValue(_CS_ShooterList);
 		
 		for(MsgFireOrder eachMsg : _fireOrderList){
-			
-			CEInfo _info = _companyList.get(_shootCnt%_numShooter);
-			UUID _shooterUUID = _info._id;
+			UUID _shooterUUID = _shooterList.get(_shootCnt%_numShooter)._modelUUID;
 			_shootCnt++;
 			
 			MsgOrder _orderMsg = new MsgOrder(OrderType.AngleEngagement, _modelUUID, _shooterUUID, eachMsg);

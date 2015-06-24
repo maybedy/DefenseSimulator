@@ -15,10 +15,14 @@ import edu.kaist.seslab.ldef.engine.modelinterface.internal.BasicEnvElement;
 import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class LocManager extends BasicEnvElement {
-	public String _IE_LocUpdate = "LocUpdateIn";
+	public static String _IE_LocUpdate = "LocUpdateIn";
 	
-	public String _OE_LocNotice = "LocNoticeOut";
-	public String _OE_LocUpdate = "LocUpdateOut";
+	public static String _OE_LocUpdate = "LocUpdateOut";
+	
+
+	public static String _OE_LocNoticeOutB = "LocNoticeOut_B";
+	public static String _OE_LocNoticeOutR = "LocNoticeOut_R";
+	
 	
 	protected String _ST_Act = "ActState";
 	protected enum ActState{
@@ -48,7 +52,8 @@ public class LocManager extends BasicEnvElement {
 		/*
 		 * Add Output Port
 		 */
-		AddOutputEvent(_OE_LocNotice);
+		AddOutputEvent(_OE_LocNoticeOutB);
+		AddOutputEvent(_OE_LocNoticeOutR);
 		AddOutputEvent(_OE_LocUpdate);
 		
 		/*
@@ -150,8 +155,12 @@ public class LocManager extends BasicEnvElement {
 			}else {
 				MsgReport _sendingMsg = _listOfMsgLocNotice.remove(0);
 				
-	
-				msg.SetValue(_OE_LocNotice, _sendingMsg);
+				if(_sendingMsg._destUUID._side == UUIDSideType.Blue){
+					msg.SetValue(_OE_LocNoticeOutB, _sendingMsg);
+				}else {
+					msg.SetValue(_OE_LocNoticeOutR, _sendingMsg);
+				}
+				
 				
 				this.UpdateStateValue(_ST_ListOfMsgLocNotice, _listOfMsgLocNotice);
 				
@@ -167,8 +176,8 @@ public class LocManager extends BasicEnvElement {
 	public double TimeAdvance() {
 		// TODO Auto-generated method stub
 		if(this.GetStateValue(_ST_Act) == ActState.TICK){
-			double ta = (double)this.GetStateValue(_ST_Tick);
-			return ta;
+//			/double ta = (double)this.GetStateValue(_ST_Tick);
+			return 1;
 		}else if(this.GetStateValue(_ST_Act) == ActState.SEND){
 			return 0;
 		}

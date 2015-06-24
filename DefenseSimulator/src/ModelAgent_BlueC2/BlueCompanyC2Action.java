@@ -67,6 +67,8 @@ public class BlueCompanyC2Action extends BasicActionModel {
 		AddAwState(_AWS_WaitedOrder, new ArrayList<MsgOrder>());
 		AddAwState(_AWS_RecentReport, null);
 		AddAwState(_AWS_FireObject, null);
+		
+		AddAwState(_AWS_MyInfo, _myInfo);
 	}
 
 	@Override

@@ -51,8 +51,8 @@ public class DamageAssessment extends BasicActionModel {
 		
 		AddOutputEvent(_OE_AssessOut);
 		
-		AddConState(_AWS_DirectDamageQueue, new ArrayList<MsgDirectFire>());
-		AddConState(_AWS_AngleDamageQueue, new ArrayList<MsgAngleDmg>());
+		AddAwState(_AWS_DirectDamageQueue, new ArrayList<MsgDirectFire>());
+		AddAwState(_AWS_AngleDamageQueue, new ArrayList<MsgAngleDmg>());
 		
 		AddAwState(_AWS_RecentReport, null);
 		

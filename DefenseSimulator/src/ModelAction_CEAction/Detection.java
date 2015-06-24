@@ -84,10 +84,12 @@ public class Detection extends BasicActionModel {
 	@Override
 	public boolean Perceive(Message msg) {
 		if(msg.GetDstEvent() == _IE_LocNoticeIn){// from env, info of nearby agents
+			
+			System.out.println("Detection activated - " + this._modelID.getString());
 			MsgReport _reportMsg = (MsgReport)msg.GetValue();
 			MsgLocNotice _locNotice = (MsgLocNotice)_reportMsg._msgValue;
 			
-			this.UpdateConStateValue(_AWS_DetectedList, _locNotice);
+			this.UpdateAWStateValue(_AWS_DetectedList, _locNotice);
 			
 			return true;
 		}else if(msg.GetDstEvent() == _IE_LocUpdate){

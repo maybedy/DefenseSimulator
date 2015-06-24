@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import CommonInfo.CEInfo;
+import CommonInfo.UUID.UUIDSideType;
 import CommonInfo.XY;
 import MsgCommon.MsgAngleDmg;
 import MsgCommon.MsgAngleFire;
@@ -17,10 +18,11 @@ import edu.kaist.seslab.ldef.engine.modelinterface.internal.Message;
 
 public class DmgManager extends BasicEnvElement {
 
-	public String _IE_AngFire = "AngleFireIn";
-	public String _IE_LocUpdate = "LocUpdate";
+	public static String _IE_AngFire = "AngleFireIn";
+	public static String _IE_LocUpdate = "LocUpdate";
 	
-	public String _OE_AngDmg = "AngleDmgOut";
+	public static String _OE_AngleDmgOutB = "AngleDmgOut_B";
+	public static String _OE_AngleDmgOutR = "AngleDmgOut_R";
 	
 	protected String _ST_Act = "ActState";
 	
@@ -57,7 +59,8 @@ public class DmgManager extends BasicEnvElement {
 		/*
 		 * Add Output Port
 		 */
-		AddOutputEvent(_OE_AngDmg);
+		AddOutputEvent(_OE_AngleDmgOutB);
+		AddOutputEvent(_OE_AngleDmgOutR);
 				
 		/*
 		 * Add State
@@ -248,7 +251,12 @@ public class DmgManager extends BasicEnvElement {
 			if( _listOfDmg.size() == 0 ) return false;
 			
 			MsgAngleDmg _msgToSend = this.RemoveDmgMsg();
-			msg.SetValue(_OE_AngDmg, _msgToSend);
+			if(_msgToSend._destUUID._side == UUIDSideType.Blue){
+				msg.SetValue(_OE_AngleDmgOutB, _msgToSend);	
+			}else {
+				msg.SetValue(_OE_AngleDmgOutR, _msgToSend);
+			}
+			
 			
 			if(_listOfDmg.isEmpty()){
 			//	System.out.println("All sended and in delta function -it will search new fire msg(to send or wait) or go to wait");

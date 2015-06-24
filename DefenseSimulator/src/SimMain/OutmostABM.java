@@ -4,9 +4,12 @@ import java.io.InputStream;
 
 import CommonInfo.CEInfo;
 import CommonInfo.UUID;
+import CommonInfo.UUID.UUIDSideType;
 import EnvMultiEnv.MultiEnvModel;
 import ModelMultiAgent_Blue.BlueMA;
 import ModelMultiAgent_Red.RedMA;
+import MsgC2Report.MsgReport;
+import MsgCommon.MsgAngleDmg;
 import MsgCommon.MsgDirectFire;
 import ScenarioParsing.AgentFactory;
 import ScenarioParsing.DefenseSimulatorScenarioProvider;
@@ -19,22 +22,9 @@ import edu.kaist.seslab.ldef.parser.scenario.ScenarioParser;
 public class OutmostABM extends BasicAgentBasedModel {
 
 	protected String _CS_Normal = "normal";
-//	private String _CS_MsgBranch = "Branch";
-//	
-//	private enum MsgBranch {
-//		None, Red, Blue
-//	}
 
 	@Override
 	public boolean Delta(Message msg) {
-//		if(msg.GetDstEvent() == BlueMA._OE_DirectFireOut || msg.GetDstEvent() == RedMA._OE_DirectFireOut){
-//			MsgDirectFire _dirFireMsg = (MsgDirectFire)msg.GetValue();
-//			if(_dirFireMsg._destUUID.getSide() == UUID.UUIDSideType.Blue){
-//				this.
-//			}else if(_dirFireMsg._destUUID.getSide() == UUID.UUIDSideType.Red){
-//				
-//			}
-//		}
 		return true;
 	}
 
@@ -82,6 +72,10 @@ public class OutmostABM extends BasicAgentBasedModel {
 		
 		AddCoupling(_CS_Normal, true, red, red._OE_DirectFireOut, blue, blue._IE_DirectFireIn);
 		AddCoupling(_CS_Normal, true, blue, blue._OE_DirectFireOut, red, red._IE_DirectFireIn);
+		
+		AddCoupling(_CS_Normal, true, multiEnv, multiEnv._OE_LocNoticeOutB, blue, blue._IE_LocNoticeIn);
+		AddCoupling(_CS_Normal, true, multiEnv, multiEnv._OE_AngleDmgOutR, red, red._IE_AngleDmgIn);
+		AddCoupling(_CS_Normal, true, multiEnv, multiEnv._OE_LocNoticeOutR, red, red._IE_LocNoticeIn);
 	}
 
 	@Override
